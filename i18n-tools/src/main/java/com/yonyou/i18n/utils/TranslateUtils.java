@@ -2,6 +2,16 @@ package com.yonyou.i18n.utils;
 
 import net.sf.chineseutils.ChineseUtils;
 
+/**
+ * 处理多语间的翻译
+ * <p>
+ * 目前主要支持中文简体以及繁体之间的翻译
+ * <p>
+ * TODO
+ * 后续将中文与英文之间的通过语料库或者DB的资源进行自动匹配翻译
+ *
+ * @author wenfan
+ */
 public class TranslateUtils {
 
     public static String transByLocales(String str, String locales) {

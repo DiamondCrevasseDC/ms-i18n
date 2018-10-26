@@ -8,8 +8,9 @@ import java.util.Properties;
 import org.apache.log4j.Logger;
 
 /**
- * 
- * @author wenfa
+ * 读取配置文件
+ *
+ * @author wenfan
  *
  */
 public class ConfigUtils {
@@ -51,10 +52,7 @@ public class ConfigUtils {
 	}
 
 	public static String getPropertyValue(String key) {
-		String value = "";
-
-		value = props.getProperty(key);
-		return value;
+		return props.getProperty(key);
 	}
 
 }

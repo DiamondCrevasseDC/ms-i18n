@@ -10,11 +10,11 @@ import java.util.*;
 import java.util.regex.Matcher;
 
 /**
- * 抽取已经国际化的所有中文信息
+ * 抽取已经国际化的所有中文信息，建立语料库，用于翻译后的在资源抽取过程中的翻译匹配
  * <p>
  * 主要用于进行翻译
  *
- * @author wenfa
+ * @author wenfan
  */
 public class CorpusFileUtil {
 

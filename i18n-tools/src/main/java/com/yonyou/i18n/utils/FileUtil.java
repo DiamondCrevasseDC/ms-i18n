@@ -7,6 +7,11 @@ import org.apache.commons.logging.LogFactory;
 import java.io.*;
 import java.util.List;
 
+/**
+ * 文件的操作
+ *
+ * @author  wenfan
+ */
 public class FileUtil {
     private static final Log log = LogFactory.getLog(FileUtil.class);
 

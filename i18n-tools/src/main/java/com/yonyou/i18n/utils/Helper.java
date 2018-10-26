@@ -9,67 +9,68 @@ import com.yonyou.i18n.model.UTFProperties;
 
 
 /**
- * Wizard辅助类
- * 
- * @author dingrf
+ * Wizard 辅助类
+ * <p>
+ * 该部分主要用于字符的编码处理
  *
+ * @author dingrf
  */
-public class Helper{
-	
-	/**
-	 * 判断字符串是否为空
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static boolean isEmptyString(String str) {
-		return (str == null) || (str.trim().length() == 0);
-	}
-  
-	/**
-	 * 取换行符
-	 * 
-	 * @return
-	 */
-	public static String getLineDelimiter() {
-		String lineDelimiter = System.getProperty("line.separator");
-		if (isEmptyString(lineDelimiter)) {
-			lineDelimiter = "\r\n";
-		}
-		return lineDelimiter;
-	}
+public class Helper {
 
-	/**
-	 * 转换字符串中的双引号
-	 * 
-	 * @param value
-	 * @return
-	 */
-	public static String dealWithQuote(String value) {
-		if (value == null)
-			return value;
-		StringBuilder sb = new StringBuilder();
-		char[] chars = value.toCharArray();
-		for (int i = 0; i < chars.length; i++) {
-			char ch = chars[i];
-			if ((ch == '"') && ((i == 0) || (chars[(i - 1)] != '\\'))) {
-				sb.append('\\');
-			}
-			sb.append(ch);
-		}
-		return sb.toString();
-	}
+    /**
+     * 判断字符串是否为空
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isEmptyString(String str) {
+        return (str == null) || (str.trim().length() == 0);
+    }
 
-	/**
-	 * 取资源文件
-	 * 
-	 * @param project
-	 * @param resourceHomePath
-	 * @param langCode
-	 * @param moduleName
-	 * @param resFileName
-	 * @return
-	 */
+    /**
+     * 取换行符
+     *
+     * @return
+     */
+    public static String getLineDelimiter() {
+        String lineDelimiter = System.getProperty("line.separator");
+        if (isEmptyString(lineDelimiter)) {
+            lineDelimiter = "\r\n";
+        }
+        return lineDelimiter;
+    }
+
+    /**
+     * 转换字符串中的双引号
+     *
+     * @param value
+     * @return
+     */
+    public static String dealWithQuote(String value) {
+        if (value == null)
+            return value;
+        StringBuilder sb = new StringBuilder();
+        char[] chars = value.toCharArray();
+        for (int i = 0; i < chars.length; i++) {
+            char ch = chars[i];
+            if ((ch == '"') && ((i == 0) || (chars[(i - 1)] != '\\'))) {
+                sb.append('\\');
+            }
+            sb.append(ch);
+        }
+        return sb.toString();
+    }
+
+    /**
+     * 取资源文件
+     *
+     * @param project
+     * @param resourceHomePath
+     * @param langCode
+     * @param moduleName
+     * @param resFileName
+     * @return
+     */
 //	public static IFile getResBoundleFile(IProject project,
 //			String resourceHomePath, String langCode, String moduleName,
 //			String resFileName) {
@@ -90,12 +91,12 @@ public class Helper{
 //		return resFile;
 //	}
 
-	/**
-	 * 获取资源文件全名称
-	 * 
-	 * @param resFileName
-	 * @return
-	 */
+    /**
+     * 获取资源文件全名称
+     *
+     * @param resFileName
+     * @return
+     */
 //	private static String getResFileNameWithSuffix(String resFileName) {
 //		if (resFileName.toLowerCase().endsWith(".properties")) {
 //			return resFileName;
@@ -103,12 +104,12 @@ public class Helper{
 //		return resFileName + ".properties";
 //	}
 
-  /**
-   * 创建资源文件
-   * 
-   * @param res
-   * @throws CoreException
-   */
+    /**
+     * 创建资源文件
+     *
+     * @param res
+     * @throws CoreException
+     */
 //	public static void createResource(IResource res) throws CoreException {
 //		IContainer parent = res.getParent();
 //		if (!parent.exists()) {
@@ -141,20 +142,20 @@ public class Helper{
 //				scopeContext);
 //	}
 
-	/**
-	 * 去除字符串两端的双引号
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static String stripQuotes(String str) {
-		if (str == null)
-			return str;
-		if ((str.startsWith("\"")) && (str.endsWith("\"")) && (str.length() >= 2)) {
-			return str.substring(1, str.length() - 1);
-		}
-		return str;
-	}
+    /**
+     * 去除字符串两端的双引号
+     *
+     * @param str
+     * @return
+     */
+    public static String stripQuotes(String str) {
+        if (str == null)
+            return str;
+        if ((str.startsWith("\"")) && (str.endsWith("\"")) && (str.length() >= 2)) {
+            return str.substring(1, str.length() - 1);
+        }
+        return str;
+    }
 
 //	public static HashMap<String, UTFProperties> getSimpchnMLResPropsHM(
 //			IProject project, String resourceHomePath, List<String> moduleList) {
@@ -210,249 +211,249 @@ public class Helper{
 //		return hm;
 //	}
 
-	/**
-	 * 根据值在UTFProperties中取key
-	 * 
-	 * @param prop
-	 * @param value
-	 * @return
-	 */
-	public static String getKeyByValue(UTFProperties prop, String value) {
-		if ((prop != null) && (prop.containsValue(value))) {
-			Iterator<String> iter = prop.keySet().iterator();
-			while (iter.hasNext()) {
-				String key = (String) iter.next();
-				String v = prop.getProperty(key);
-				if (v.equals(value)) {
-					return key;
-				}
-			}
-		}
-		return null;
-	}
+    /**
+     * 根据值在UTFProperties中取key
+     *
+     * @param prop
+     * @param value
+     * @return
+     */
+    public static String getKeyByValue(UTFProperties prop, String value) {
+        if ((prop != null) && (prop.containsValue(value))) {
+            Iterator<String> iter = prop.keySet().iterator();
+            while (iter.hasNext()) {
+                String key = (String) iter.next();
+                String v = prop.getProperty(key);
+                if (v.equals(value)) {
+                    return key;
+                }
+            }
+        }
+        return null;
+    }
 
-	/***
-	 * 两个set内容比较
-	 * 
-	 * @param set1
-	 * @param set2
-	 * @return
-	 */
-	public static boolean isEquals(Set<String> set1, Set<String> set2) {
-		if (set1.size() != set2.size()) {
-			return false;
-		}
-		String[] strs1 = (String[]) set1.toArray(new String[0]);
-		String[] strs2 = (String[]) set2.toArray(new String[1]);
-		Comparator<Object> comp = new Comparator<Object>() {
-			public int compare(String arg0, String arg1) {
-				return arg0.compareTo(arg1);
-			}
+    /***
+     * 两个set内容比较
+     *
+     * @param set1
+     * @param set2
+     * @return
+     */
+    public static boolean isEquals(Set<String> set1, Set<String> set2) {
+        if (set1.size() != set2.size()) {
+            return false;
+        }
+        String[] strs1 = (String[]) set1.toArray(new String[0]);
+        String[] strs2 = (String[]) set2.toArray(new String[1]);
+        Comparator<Object> comp = new Comparator<Object>() {
+            public int compare(String arg0, String arg1) {
+                return arg0.compareTo(arg1);
+            }
 
-			public int compare(Object obj, Object obj1) {
-				return compare((String) obj, (String) obj1);
-			}
+            public int compare(Object obj, Object obj1) {
+                return compare((String) obj, (String) obj1);
+            }
 
-		};
-		Arrays.sort(strs1, comp);
-		Arrays.sort(strs2, comp);
-		for (int i = 0; i < strs1.length; i++) {
-			if (!strs1[i].equals(strs2[i])) {
-				return false;
-			}
-		}
-		return true;
-	}
+        };
+        Arrays.sort(strs1, comp);
+        Arrays.sort(strs2, comp);
+        for (int i = 0; i < strs1.length; i++) {
+            if (!strs1[i].equals(strs2[i])) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-	/**
-	 * 字符串特殊字符处理
-	 * 
-	 * @param s
-	 * @return
-	 */
-	public static String unwindEscapeChars(String s) {
-		if (s != null) {
-			StringBuffer sb = new StringBuffer(s.length());
-			int length = s.length();
-			for (int i = 0; i < length; i++) {
-				char c = s.charAt(i);
-				sb.append(getUnwoundString(c));
-			}
-			return sb.toString();
-		}
-		return null;
-	}
+    /**
+     * 字符串特殊字符处理
+     *
+     * @param s
+     * @return
+     */
+    public static String unwindEscapeChars(String s) {
+        if (s != null) {
+            StringBuffer sb = new StringBuffer(s.length());
+            int length = s.length();
+            for (int i = 0; i < length; i++) {
+                char c = s.charAt(i);
+                sb.append(getUnwoundString(c));
+            }
+            return sb.toString();
+        }
+        return null;
+    }
 
-	private static String getUnwoundString(char c) {
-		switch (c) {
-		case '\b':
-			return "\\b";
-		case '\t':
-			return "\\t";
-		case '\n':
-			return "\\n";
-		case '\f':
-			return "\\f";
-		case '\r':
-			return "\\r";
+    private static String getUnwoundString(char c) {
+        switch (c) {
+            case '\b':
+                return "\\b";
+            case '\t':
+                return "\\t";
+            case '\n':
+                return "\\n";
+            case '\f':
+                return "\\f";
+            case '\r':
+                return "\\r";
 //		case '\:':
 //			return "\\:";
 //		case '\!':
 //			return "\\!";
-		case '\\':
-			return "\\\\";
-		}
-		return String.valueOf(c);
-	}
+            case '\\':
+                return "\\\\";
+        }
+        return String.valueOf(c);
+    }
 
-	public static String windEscapeChars(String s) {
-		if (s != null) {
-			StringBuffer sb = new StringBuffer(s.length());
-			int length = s.length();
-			for (int i = 0; i < length; i++) {
-				char c = s.charAt(i);
-				if (c == '\\' && i < length - 1) {
-					char next = s.charAt(i + 1);
-					switch (next) {
-					case 98: // 'b'
-						sb.append("\b");
-						i++;
-						break;
+    public static String windEscapeChars(String s) {
+        if (s != null) {
+            StringBuffer sb = new StringBuffer(s.length());
+            int length = s.length();
+            for (int i = 0; i < length; i++) {
+                char c = s.charAt(i);
+                if (c == '\\' && i < length - 1) {
+                    char next = s.charAt(i + 1);
+                    switch (next) {
+                        case 98: // 'b'
+                            sb.append("\b");
+                            i++;
+                            break;
 
-					case 116: // 't'
-						sb.append("\t");
-						i++;
-						break;
+                        case 116: // 't'
+                            sb.append("\t");
+                            i++;
+                            break;
 
-					case 110: // 'n'
-						sb.append("\n");
-						i++;
-						break;
+                        case 110: // 'n'
+                            sb.append("\n");
+                            i++;
+                            break;
 
-					case 102: // 'f'
-						sb.append("\f");
-						i++;
-						break;
+                        case 102: // 'f'
+                            sb.append("\f");
+                            i++;
+                            break;
 
-					case 114: // 'r'
-						sb.append("\r");
-						i++;
-						break;
+                        case 114: // 'r'
+                            sb.append("\r");
+                            i++;
+                            break;
 
-					case 92: // '\\'
-						sb.append("\\");
-						i++;
-						break;
-					}
-				} else {
-					sb.append(c);
-				}
-			}
-			return sb.toString();
-		} else {
-			return s;
-		}
-	}
-	
-	/**
-	 * 包含字母
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static boolean containsLetters(String str) {
-		if (str == null) {
-			return false;
-		}
-		boolean b = false;
-		char[] chars = str.toCharArray();
-		int count = chars == null ? 0 : chars.length;
-		for (int i = 0; i < count; i++) {
-			char ch = chars[i];
-			if (Character.toUpperCase(ch) != Character.toLowerCase(ch)) {
-				b = true;
-				break;
-			}
-		}
-		return b;
-	}
+                        case 92: // '\\'
+                            sb.append("\\");
+                            i++;
+                            break;
+                    }
+                } else {
+                    sb.append(c);
+                }
+            }
+            return sb.toString();
+        } else {
+            return s;
+        }
+    }
 
-	/**
-	 * 包含数字
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static boolean containsDigist(String str) {
-		if (str == null) {
-			return false;
-		}
-		boolean b = false;
-		char[] chars = str.toCharArray();
-		int count = chars == null ? 0 : chars.length;
-		for (int i = 0; i < count; i++) {
-			char ch = chars[i];
-			if (Character.isDigit(ch)) {
-				b = true;
-				break;
-			}
-		}
-		return b;
-	}
+    /**
+     * 包含字母
+     *
+     * @param str
+     * @return
+     */
+    public static boolean containsLetters(String str) {
+        if (str == null) {
+            return false;
+        }
+        boolean b = false;
+        char[] chars = str.toCharArray();
+        int count = chars == null ? 0 : chars.length;
+        for (int i = 0; i < count; i++) {
+            char ch = chars[i];
+            if (Character.toUpperCase(ch) != Character.toLowerCase(ch)) {
+                b = true;
+                break;
+            }
+        }
+        return b;
+    }
 
-	/**
-	 * 包含其它字符
-	 * 
-	 * @param str
-	 * @return
-	 */
-	public static boolean containsOtherSign(String str) {
-		if (str == null) {
-			return false;
-		}
-		boolean b = false;
-		char[] chars = str.toCharArray();
-		int count = chars == null ? 0 : chars.length;
-		for (int i = 0; i < count; i++) {
-			char ch = chars[i];
-			if ((!Character.isDigit(ch))
-					&& (Character.toUpperCase(ch) == Character.toLowerCase(ch))) {
-				b = true;
-				break;
-			}
-		}
-		return b;
-	}
+    /**
+     * 包含数字
+     *
+     * @param str
+     * @return
+     */
+    public static boolean containsDigist(String str) {
+        if (str == null) {
+            return false;
+        }
+        boolean b = false;
+        char[] chars = str.toCharArray();
+        int count = chars == null ? 0 : chars.length;
+        for (int i = 0; i < count; i++) {
+            char ch = chars[i];
+            if (Character.isDigit(ch)) {
+                b = true;
+                break;
+            }
+        }
+        return b;
+    }
 
-	/**
-	 * 字符串数组排序
-	 * 
-	 * @param strs
-	 */
-	public static void sortStrings(String strs[]) {
-		Arrays.sort(strs, new Comparator<Object>() {
+    /**
+     * 包含其它字符
+     *
+     * @param str
+     * @return
+     */
+    public static boolean containsOtherSign(String str) {
+        if (str == null) {
+            return false;
+        }
+        boolean b = false;
+        char[] chars = str.toCharArray();
+        int count = chars == null ? 0 : chars.length;
+        for (int i = 0; i < count; i++) {
+            char ch = chars[i];
+            if ((!Character.isDigit(ch))
+                    && (Character.toUpperCase(ch) == Character.toLowerCase(ch))) {
+                b = true;
+                break;
+            }
+        }
+        return b;
+    }
 
-			public int compare(String o1, String o2) {
-				if (o1 == null)
-					return o2 != null ? -1 : 0;
-				else
-					return o1.compareTo(o2);
-			}
+    /**
+     * 字符串数组排序
+     *
+     * @param strs
+     */
+    public static void sortStrings(String strs[]) {
+        Arrays.sort(strs, new Comparator<Object>() {
 
-			public int compare(Object obj, Object obj1) {
-				return compare((String) obj, (String) obj1);
-			}
+            public int compare(String o1, String o2) {
+                if (o1 == null)
+                    return o2 != null ? -1 : 0;
+                else
+                    return o1.compareTo(o2);
+            }
 
-		});
-	}
+            public int compare(Object obj, Object obj1) {
+                return compare((String) obj, (String) obj1);
+            }
 
-	/**
-	 * 两个Region是否有交叉
-	 * 
-	 * @param reg1
-	 * @param reg2
-	 * @return
-	 */
+        });
+    }
+
+    /**
+     * 两个Region是否有交叉
+     *
+     * @param reg1
+     * @param reg2
+     * @return
+     */
 //	public static boolean isIntersectRegion(Region reg1, Region reg2) {
 //		int pos11 = reg1.getOffset();
 //		int pos12 = reg1.getOffset() + reg1.getLength();
@@ -465,12 +466,12 @@ public class Helper{
 //		return intersect;
 //	}
 
-	/**
-	 * 取项目源码路径列表
-	 * 
-	 * @param project
-	 * @return
-	 */
+    /**
+     * 取项目源码路径列表
+     *
+     * @param project
+     * @return
+     */
 //	public static List<IPackageFragmentRoot> getProjectAllSourceRoot(
 //			IJavaProject project) {
 //		List<IPackageFragmentRoot> list = new ArrayList<IPackageFragmentRoot>();
@@ -488,7 +489,7 @@ public class Helper{
 //
 //		return list;
 //	}
-  
+
 //  /**
 //   * 创建文件夹
 //   * 

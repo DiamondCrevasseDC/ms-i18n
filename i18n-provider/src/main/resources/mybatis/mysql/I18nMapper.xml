@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yonyou.cloud.i18n.dao.I18nMapper">
+
+    <resultMap id="BaseResultMap" type="com.yonyou.cloud.i18n.entity.I18n">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="NAME" property="name"/>
+        <result column="PROJECT_TYPE" property="projectType"/>
+        <result column="ATTACH_ID" property="attachId"/>
+
+        <result column="dr" property="dr"/>
+        <result column="ts" property="ts"/>
+        <result column="last_modified" property="lastModified"/>
+        <result column="last_modify_user" property="lastModifyUser"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+
+
+    </resultMap>
+
+
+    <select id="selectAllByPage" resultMap="BaseResultMap">
+        SELECT t.* FROM i18n t WHERE t.dr=0
+
+        <if test="condition != null">
+            <if test="condition.searchMap.id!=null and condition.searchMap.id!='' ">
+                and t.ID = #{condition.searchMap.id}
+            </if>
+            <if test="condition.searchMap.name!=null and condition.searchMap.name!='' ">
+                and t.NAME LIKE CONCAT( CONCAT('%', #{condition.searchMap.name}),'%')
+            </if>
+            <if test="condition.searchMap.projectType!=null and condition.searchMap.projectType!='' ">
+                and t.PROJECT_TYPE = #{condition.searchMap.projectType}
+            </if>
+            <if test="condition.searchMap.attachId!=null and condition.searchMap.attachId!='' ">
+                and t.ATTACH_ID = #{condition.searchMap.attachId}
+            </if>
+
+
+        </if>
+        order by ts desc
+        <if test="page != null">
+            <if test="page.sort!=null">
+
+                <foreach collection="page.sort" item="item" separator=" ">
+                    ,${item.property} ${item.direction}
+                </foreach>
+            </if>
+        </if>
+    </select>
+</mapper>

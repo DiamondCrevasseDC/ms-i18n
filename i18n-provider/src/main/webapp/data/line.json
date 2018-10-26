@@ -1,0 +1,65 @@
+{
+    title : {
+        text: '未来一周气温变化',
+        subtext: '用友软件园-北京'
+    },
+    tooltip : {
+        trigger: 'axis'
+    },
+    legend: {
+        data:['最高气温','最低气温']
+    },
+    toolbox: {
+        show : true,
+        feature : {
+            mark : true,
+            dataView : {readOnly: false},
+            magicType:['line', 'bar'],
+            restore : true,
+            saveAsImage : true
+        }
+    },
+    calculable : true,
+    xAxis : [
+        {
+            type : 'category',
+            boundaryGap : false,
+            data : ['周一','周二','周三','周四','周五','周六','周日']
+        }
+    ],
+    yAxis : [
+        {
+            type : 'value',
+            axisLabel : {
+                formatter: '{value} °C'
+            },
+            splitArea : {show : true}
+        }
+    ],
+    series : [
+        {
+            name:'最高气温',
+            type:'line',
+            itemStyle: {
+                normal: {
+                    lineStyle: {
+                        shadowColor : 'rgba(0,0,0,0.4)'
+                    }
+                }
+            },
+            data:[11, 11, 15, 13, 12, 13, 10]
+        },
+        {
+            name:'最低气温',
+            type:'line',
+            itemStyle: {
+                normal: {
+                    lineStyle: {
+                        shadowColor : 'rgba(0,0,0,0.4)'
+                    }
+                }
+            },
+            data:[-2, -1, -8, 0, -3, 2, 0]
+        }
+    ]
+}

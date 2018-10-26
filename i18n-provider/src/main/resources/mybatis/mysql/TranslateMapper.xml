@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.yonyou.cloud.translate.dao.TranslateMapper">
+
+    <resultMap id="BaseResultMap" type="com.yonyou.cloud.translate.entity.Translate">
+        <id column="id" jdbcType="VARCHAR" property="id" />
+        <result column="CHINESE"  property="chinese" />
+        <result column="TRADITIONAL"  property="traditional" />
+        <result column="PROPERTY_CODE"  property="propertyCode" />
+        <result column="ENGLISH"  property="english" />
+        <result column="RESERVE1"  property="reserve1" />
+        <result column="RESERVE2"  property="reserve2" />
+        <result column="FRENCH"  property="french" />
+
+        <result column="dr" property="dr" />
+        <result column="ts" property="ts" />
+        <result column="last_modified" property="lastModified" />
+        <result column="last_modify_user" property="lastModifyUser" />
+        <result column="create_time" property="createTime" />
+        <result column="create_user" property="createUser" />
+
+        
+        
+
+    </resultMap>
+
+
+        <select id="selectAllByPage"  resultMap="BaseResultMap">
+                SELECT  t.* FROM translate t WHERE t.dr=0
+                         
+                        <if test="condition != null">
+                <if test="condition.searchMap.id!=null and condition.searchMap.id!='' ">
+                    and t.ID = #{condition.searchMap.id}
+                </if>
+                            <if test="condition.searchMap.chinese!=null and condition.searchMap.chinese!='' ">
+                    and t.CHINESE LIKE CONCAT( CONCAT('%', #{condition.searchMap.chinese}),'%')
+                </if>
+
+
+
+                            <if test="condition.searchMap.traditional!=null and condition.searchMap.traditional!='' ">
+                    and t.TRADITIONAL LIKE CONCAT( CONCAT('%', #{condition.searchMap.traditional}),'%')
+                </if>
+
+
+
+                            <if test="condition.searchMap.propertyCode!=null and condition.searchMap.propertyCode!='' ">
+                    and t.PROPERTY_CODE LIKE CONCAT( CONCAT('%', #{condition.searchMap.propertyCode}),'%')
+                </if>
+
+
+
+                            <if test="condition.searchMap.english!=null and condition.searchMap.english!='' ">
+                    and t.ENGLISH LIKE CONCAT( CONCAT('%', #{condition.searchMap.english}),'%')
+                </if>
+
+
+
+                            <if test="condition.searchMap.reserve1!=null and condition.searchMap.reserve1!='' ">
+                    and t.RESERVE1 = #{condition.searchMap.reserve1}
+                </if>
+
+
+
+                            <if test="condition.searchMap.reserve2!=null and condition.searchMap.reserve2!='' ">
+                    and t.RESERVE2 = #{condition.searchMap.reserve2}
+                </if>
+
+
+
+                            <if test="condition.searchMap.french!=null and condition.searchMap.french!='' ">
+                    and t.FRENCH LIKE CONCAT( CONCAT('%', #{condition.searchMap.french}),'%')
+                </if>
+
+
+
+                        </if>
+                        order by ts desc
+                        <if test="page != null">
+                                <if test="page.sort!=null">
+
+                                        <foreach collection="page.sort" item="item" separator=" ">
+                        ,${item.property}  ${item.direction}
+                                        </foreach>
+                                </if>
+                        </if>
+        </select>
+        <select id="selectListByExcelData"  resultMap="BaseResultMap" parameterType="java.util.List">
+                select t.* FROM translate t WHERE t.dr=0 and
+                t.id in
+                        <foreach collection="list" item="item" index="index"
+                                separator="," open="(" close=")">
+                                #{item}
+                        </foreach>
+    </select>
+</mapper>

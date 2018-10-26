@@ -1,0 +1,335 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.yonyou.cloud.i18n</groupId>
+		<artifactId>ms-i18n</artifactId>
+		<version>1.0.0-SNAPSHOT</version>
+	</parent>
+	<artifactId>i18n-provider</artifactId>
+	<packaging>war</packaging>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>com.yonyou.iuap.pap</groupId>
+			<artifactId>iuap-pap-starter</artifactId>
+			<version>3.6.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yonyou.iuap.middleware</groupId>
+			<version>3.5.1-SNAPSHOT</version>
+			<artifactId>starter</artifactId>
+			<scope>provided</scope>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.yonyou.cloud.i18n</groupId>
+			<artifactId>i18n-api</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!--<dependency>-->
+			<!--<groupId>com.yonyou.cloud.i18n</groupId>-->
+			<!--<artifactId>i18n-entity</artifactId>-->
+			<!--<version>${project.version}</version>-->
+		<!--</dependency>-->
+
+		<dependency>
+			<groupId>com.yonyou.cloud.i18n</groupId>
+			<artifactId>i18n-tools</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+
+		<!-- RPC -->
+		<dependency>
+			<groupId>com.yonyou.cloud.middleware</groupId>
+			<artifactId>mwclient</artifactId>
+			<version>${mw.version}</version>
+			<type>pom</type>
+		</dependency>
+		
+		<!-- eos begin -->
+		<!-- 
+		<dependency>
+			<groupId>com.yonyou.cloud.middleware</groupId>
+			<artifactId>eos-spring-support</artifactId>
+			<version>${mw.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yonyou.cloud</groupId>
+			<artifactId>auth-sdk-client</artifactId>
+			<version>${auth-sdk-client.version}</version>
+		</dependency>
+		-->
+		<!-- eos end -->
+		
+		<!-- iuap context support -->
+		<!--  
+		<dependency>
+			<groupId>com.yonyou.iuap</groupId>
+			<artifactId>iuap-generic</artifactId>
+			<version>${iuap.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yonyou.cloud.middleware</groupId>
+			<artifactId>iris-iuap-support</artifactId>
+			<version>${mw.version}</version>
+		</dependency>
+		-->
+		
+		<!-- DB、JDBC -->
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-jdbc</artifactId>
+			<version>${tomcat-jdbc.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>${mysql-connector.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		
+		<!-- commons -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>${logback.version}</version>
+		</dependency>
+		<dependency>
+		  	<groupId>commons-io</groupId>
+		  	<artifactId>commons-io</artifactId>
+		  	<version>${commons-io.version}</version>
+		</dependency>
+		<dependency>
+	        <groupId>org.apache.commons</groupId>
+	        <artifactId>commons-lang3</artifactId>
+	        <version>${commons-lang3.version}</version>
+	    </dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>${jackson.version}</version>
+		</dependency>
+		
+		<!-- mvc、servlets -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>${javax.servlet-api.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        
+        <!-- test -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>${junit.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty.aggregate</groupId>
+			<artifactId>jetty-webapp</artifactId>
+			<version>${jetty.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.eclipse.jetty</groupId>
+			<artifactId>jetty-jsp</artifactId>
+			<version>${jetty.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+
+	<!-- 以下为profile示例 -->
+	<profiles>
+
+		<profile>
+			<!-- 本地开发环境 -->
+			<id>development</id>
+			<properties>
+				<profiles.active>development</profiles.active>
+				<deploy.url>http://host:port/manager/text</deploy.url>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+		</profile>
+		<profile>
+			<!-- 测试环境 -->
+			<id>testcase</id>
+			<properties>
+				<profiles.active>testcase</profiles.active>
+				<deploy.url>http://host:port/manager/text</deploy.url>
+			</properties>
+		</profile>
+		<profile>
+			<!-- 生产环境 -->
+			<id>production</id>
+			<properties>
+				<profiles.active>production</profiles.active>
+				<deploy.url>http://host:port/manager/text</deploy.url>
+			</properties>
+		</profile>
+
+
+		<profile>
+			<id>develop</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+
+				<!-- 事件 -->
+				<pom.mq.address>127.0.0.1:5672</pom.mq.address>
+				<pom.mq.username>admin</pom.mq.username>
+				<pom.mq.password>admin</pom.mq.password>
+				<pom.log.clusterCode>SERURITYLOG</pom.log.clusterCode>
+				<pom.msg.clusterCode>APP_INIT_CLUSTER</pom.msg.clusterCode>
+				<pom.event.manager.url>https://uastest.yyuap.com/event/eventmanager/eventinfo/index.do</pom.event.manager.url>
+
+				<!-- fastDFS -->
+				<pom.fdfs.tracker_server>172.20.18.16:22122</pom.fdfs.tracker_server>
+
+				<!-- mybatis -->
+
+
+				<pom.jdbc.url><![CDATA[jdbc:mysql://172.20.23.244:3306/rpc-provider?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true]]></pom.jdbc.url>
+				<pom.jdbc.username>root</pom.jdbc.username>
+				<pom.jdbc.password>root</pom.jdbc.password>
+
+				<!-- Redis -->
+				<pom.redis.url>direct://172.20.23.170:6379?poolName=mypool&amp;masterName=mymaster&amp;poolSize=100</pom.redis.url>
+
+				<!-- URL -->
+				<pom.cas.server>http://idtest.yyuap.com</pom.cas.server>
+				<pom.tenantuser.server>http://idtest.yyuap.com</pom.tenantuser.server>
+				<pom.yht.redisSessionStore>com.yonyou.yht.cache.RedisSessionStore</pom.yht.redisSessionStore>
+
+				<pom.tenant.server>http://localhost:8080</pom.tenant.server>
+				<pom.tenant.openappserver>http://localhost:8080</pom.tenant.openappserver>
+				<!-- 租户登录的url -->
+				<pom.tenant.login>https://uastest.yyuap.com/apptenant</pom.tenant.login>
+				<apps.tenant.base.url>https://uastest.yyuap.com</apps.tenant.base.url>
+
+				<pom.clientCredentialPath>D:/authfile.txt</pom.clientCredentialPath>
+			</properties>
+		</profile>
+		<profile>
+			<id>test</id>
+			<properties>
+				<!-- 事件 -->
+				<pom.mq.address>127.0.0.1:5672</pom.mq.address>
+				<pom.mq.username>admin</pom.mq.username>
+				<pom.mq.password>admin</pom.mq.password>
+				<pom.msg.clusterCode>APP_INIT_CLUSTER</pom.msg.clusterCode>
+				<pom.event.manager.url>https://uastest.yyuap.com/event/eventmanager/eventinfo/index.do</pom.event.manager.url>
+
+
+				<!-- mybatis -->
+				<pom.jdbc.url>jdbc:mysql://127.0.0.1:3306/tenant?useUnicode=true&amp;characterEncoding=utf-8</pom.jdbc.url>
+				<pom.jdbc.username>6eLJVbeWA/E=</pom.jdbc.username>
+				<pom.jdbc.password>6eLJVbeWA/E=</pom.jdbc.password>
+
+				<!-- redis -->
+				<pom.redis.url>direct://127.0.0.1:6379?poolName=mypool&amp;masterName=mymaster&amp;poolSize=100</pom.redis.url>
+
+				<!-- URL -->
+				<pom.cas.server>http://idtest.yyuap.com</pom.cas.server>
+				<pom.tenant.server>https://uastest.yyuap.com</pom.tenant.server>
+				<pom.tenantuser.server>http://idtest.yyuap.com</pom.tenantuser.server>
+				<pom.tenantauth.server>http://uastest.yyuap.com</pom.tenantauth.server>
+				<pom.tenant.login>https://uastest.yyuap.com/apptenant</pom.tenant.login>
+				<apps.tenant.base.url>https://uastest.yyuap.com</apps.tenant.base.url>
+				<pom.yht.redisSessionStore>com.yonyou.yht.cache.RedisSessionStore</pom.yht.redisSessionStore>
+
+				<!-- clientCredentialPath -->
+				<pom.clientCredentialPath>/data/authfile.txt</pom.clientCredentialPath>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<properties>
+				<!-- 事件中心配置 -->
+				<pom.mq.address>127.0.0.1:5672</pom.mq.address>
+				<pom.mq.username>yonyouuser</pom.mq.username>
+				<pom.mq.password>admin</pom.mq.password>
+				<pom.msg.clusterCode>SSO_CLUSTER</pom.msg.clusterCode>
+				<pom.event.manager.url>https://uastest.yyuap.com:6272/event/eventmanager/eventinfo/index.do</pom.event.manager.url>
+				<pom.log.clusterCode>SERURITYLOG</pom.log.clusterCode>
+
+				<!-- 数据库 -->
+				<pom.jdbc.url>jdbc:mysql://127.0.0.1:3307/usercenter?useUnicode=true&amp;characterEncoding=utf-8</pom.jdbc.url>
+				<pom.jdbc.username>COuXQLiIZ2fG1YgSwKzwEQ==</pom.jdbc.username>
+				<pom.jdbc.password>COuXQLiIZ2d8K+l//nJFgV0ZrNgf9NFG</pom.jdbc.password>
+
+
+				<!-- Redis -->
+				<pom.redis.url>direct://127.0.0.1:6380?poolName=mypool&amp;masterName=mymaster&amp;poolSize=300</pom.redis.url>
+
+				<!-- URL -->
+				<pom.cas.server>https://uastest.yyuap.com:6272</pom.cas.server>
+				<pom.tenant.server>https://uastest.yyuap.com:6272</pom.tenant.server>
+				<pom.tenantuser.server>https://uastest.yyuap.com:6272</pom.tenantuser.server>
+				<pom.tenantauth.server>https://uastest.yyuap.com:6272</pom.tenantauth.server>
+
+				<!-- clientCredentialPath -->
+				<pom.clientCredentialPath>/usr/local/tomcat/webapps/cas/WEB-INF/authfile.txt</pom.clientCredentialPath>
+			</properties>
+		</profile>
+
+	</profiles>
+
+
+	<!-- 插件配置 -->
+	<build>
+		<finalName>${project.artifactId}</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>jetty-maven-plugin</artifactId>
+				<version>${jetty.version}</version>
+				<configuration>
+					<contextXml>${project.basedir}/src/test/resources/jetty-context.xml</contextXml>
+					<webAppConfig>
+						<contextPath>/${project.artifactId}</contextPath>
+						<defaultsDescriptor>${project.basedir}/src/test/resources/webdefault.xml</defaultsDescriptor>
+					</webAppConfig>
+					<connectors>
+						<connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+							<port>8081</port>
+							<maxIdleTime>60000</maxIdleTime>
+						</connector>
+					</connectors>
+					<stopPort>9091</stopPort>
+					<stopKey>shutdown</stopKey>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

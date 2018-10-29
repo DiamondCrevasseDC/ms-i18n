@@ -81,6 +81,30 @@ public class StringUtils {
         return list;
     }
 
+    /**
+     * 解析最后生成的文件：properties、json格式等
+     *
+     * @param multiLangType
+     * @return
+     */
+    public static List<String> getResourceFileList(String multiLangType) {
+
+        List<String> typeList = new ArrayList<>();
+
+        if (multiLangType != null && !"".equals(multiLangType)) {
+
+            String[] mlrts = multiLangType.split(",");
+
+            for (String mlrt : mlrts) {
+                if (mlrt != null && !"".equals(mlrt.trim())) {
+                    typeList.add(mlrt);
+                }
+            }
+        }
+
+        return typeList;
+    }
+
 
     /**
      * 解析最后生成的文件：properties、json格式等

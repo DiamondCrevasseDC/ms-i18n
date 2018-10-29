@@ -10,9 +10,13 @@ import com.yonyou.i18n.core.ScanAllFiles;
 import com.yonyou.i18n.model.MLResSubstitution;
 import com.yonyou.i18n.model.PageNode;
 import com.yonyou.i18n.utils.*;
+import org.apache.log4j.Logger;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
 
 /**
  * 整体的实现步骤是：
@@ -25,20 +29,132 @@ import java.util.*;
  */
 public class StepBy {
 
+    private static Logger logger = Logger.getLogger(StepBy.class);
+
     // 所有的数据都是通过该对象进行传递的
     private List<PageNode> pageNodes = null;
 
-    // 获取写入的语种类别
-    public Map<String, String> getMlrts(){
-         return StringUtils.getResourceFileList(ConfigUtils.getPropertyValue("resourcePrefix"), ConfigUtils.getPropertyValue("testMultiLangResourceType"));
+
+    /**
+     * 初始化项目目录
+     * <p>
+     * 加载所有文件
+     */
+    public void init(String path) throws Exception {
+
+        try {
+            this.pageNodes = (new ScanAllFiles(path)).loadNodes();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
     }
 
-    // 获取运行时的抽取中文信息
+    /**
+     * 初始化项目目录
+     * <p>
+     * 加载所有文件
+     */
+    public void init(String path, String projectType) throws Exception {
+
+        try {
+            this.pageNodes = (new ScanAllFiles(path, projectType)).loadNodes();
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+    }
+
+    /**
+     * 通过字符集范围进行抽取
+     *
+     * @param
+     */
+    public void extract() throws Exception {
+
+        try {
+            new ExtractChar().doExtract(pageNodes);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
+    }
+
+    /**
+     * 写入资源文件
+     */
+    public void resource() throws Exception {
+
+        try {
+            ResourcesFile rf = new ResourcesFile();
+
+            // 写入整体资源文件
+            rf.writeResourceFile(pageNodes);
+
+            // 分目录写入资源文件
+            rf.writeResourceFileByDirectory(pageNodes);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
+    }
+
+    /**
+     * 直接替换
+     *
+     * @param
+     */
+    public void replace() throws Exception {
+
+        try {
+            new ReplaceFile().updateFiles(pageNodes);
+        } catch (Exception e) {
+            logger.error(e.getMessage(), e);
+            throw e;
+        }
+
+    }
+
+
+    /**
+     * 获取写入的语种类别
+     *
+     * @return
+     */
+    @Deprecated
+    public Map<String, String> getMlrts1() {
+
+        return StringUtils.getResourceFileList(ConfigUtils.getPropertyValue("resourcePrefix"), ConfigUtils.getPropertyValue("testMultiLangResourceType"));
+    }
+
+
+    /**
+     * 获取写入的语种类别
+     *
+     * @return multi lang resource type
+     */
+    public List<String> getMlrts() {
+        return StringUtils.getResourceFileList(ConfigUtils.getPropertyValue("multiLangType"));
+    }
+
+
+    /**
+     * 获取运行时的抽取中文信息
+     *
+     * @return
+     */
     public List<PageNode> getPageNodes() {
         return this.pageNodes;
     }
 
-    // 获取运行时的抽取中文信息
+    /**
+     * 获取运行时的抽取中文信息
+     *
+     * @return
+     */
     public Properties getPageNodesProperties() {
 
         Properties prop = new Properties();
@@ -59,7 +175,12 @@ public class StepBy {
         return prop;
     }
 
-    // 获取运行时的抽取中文信息（根据语种的选择信息）
+    /**
+     * 获取运行时的抽取中文信息（根据语种的选择信息）
+     *
+     * @param locales
+     * @return
+     */
     public Properties getPageNodesProperties(String locales) {
 
         Properties prop = new Properties();
@@ -81,68 +202,6 @@ public class StepBy {
     }
 
 
-    /**
-     * 初始化项目目录
-     * <p>
-     * 加载所有文件
-     */
-    public void init(String path) {
-
-        this.pageNodes = (new ScanAllFiles(path)).loadNodes();
-
-    }
-
-    /**
-     * 初始化项目目录
-     * <p>
-     * 加载所有文件
-     */
-    public void init(String path, String projectType) {
-
-        this.pageNodes = (new ScanAllFiles(path, projectType)).loadNodes();
-
-    }
-
-    /**
-     * 通过字符集范围进行抽取
-     *
-     * @param
-     */
-    public void extract() {
-
-        new ExtractChar().doExtract(pageNodes);
-
-
-    }
-
-    /**
-     * 写入资源文件
-     */
-    public void resource() {
-
-        ResourcesFile rf = new ResourcesFile();
-
-        // 写入整体资源文件
-        rf.writeResourceFile(pageNodes);
-
-        // 分目录写入资源文件
-        rf.writeResourceFileByDirectory(pageNodes);
-
-
-    }
-
-    /**
-     * 直接替换
-     *
-     * @param
-     */
-    public void replace() {
-
-        new ReplaceFile().updateFiles(pageNodes);
-
-    }
-
-
     public static void main(String[] args) {
 
 
@@ -154,6 +213,8 @@ public class StepBy {
 
         String sourcePath = "/Users/yanyong/temp/iuap-pap-baseservice-develop/java.zip";
         String path = "/Users/yanyong/temp/iuap-pap-baseservice-develop";// + "_" + System.currentTimeMillis();
+
+        path = "/Users/yanyong/Downloads/react_example_fe--old";
         String zipFile = path + ".zip";
 
         try {
@@ -162,7 +223,7 @@ public class StepBy {
 
             StepBy sb = new StepBy();
 
-            sb.init(path);
+            sb.init(path, "React");
 
             sb.extract();
 

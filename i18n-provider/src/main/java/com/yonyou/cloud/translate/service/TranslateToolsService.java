@@ -100,6 +100,48 @@ public class TranslateToolsService implements ITranslateToolsService {
     }
 
     @Override
+    public Boolean saveTranslate(Properties properties, List<String> typeList) throws Exception {
+
+        logger.info("开始执行资源的多语种解析并存入数据库！");
+
+        List<Translate> listData = new ArrayList<Translate>();
+        Translate translate;
+
+
+        for (String key : properties.stringPropertyNames()) {
+
+            translate = new Translate();
+            translate.setPropertyCode(key);
+            for (String locales : typeList) {
+
+                if (locales == null || "".equals(locales) || "zh_CN".equalsIgnoreCase(locales) || "cn".equalsIgnoreCase(locales)) {
+                    translate.setChinese(TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(properties.getProperty(key))), locales));
+                } else if ("zh_TW".equalsIgnoreCase(locales) || "tw".equalsIgnoreCase(locales)) {
+                    translate.setTraditional(TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(properties.getProperty(key))), locales));
+                } else if ("en_US".equalsIgnoreCase(locales) || "en_UK".equalsIgnoreCase(locales) || "en".equalsIgnoreCase(locales)) {
+                    translate.setEnglish(TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(properties.getProperty(key))), locales));
+                } else if ("fr_FR".equalsIgnoreCase(locales) || "fr".equalsIgnoreCase(locales)) {
+                    translate.setFrench(TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(properties.getProperty(key))), locales));
+                } else if (translate.getReserve1() == null || "".equals(translate.getReserve1())) {
+                    translate.setReserve1(TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(properties.getProperty(key))), locales));
+                } else {
+                    translate.setReserve2(TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(properties.getProperty(key))), locales));
+                }
+            }
+
+            listData.add(translate);
+        }
+
+        this.translateService.saveBatch(listData);
+
+        logger.info("执行资源写入数据库完成！");
+
+        return true;
+
+    }
+
+
+    @Deprecated
     public Boolean saveTranslate(Properties properties, Map<String, String> map) throws Exception {
 
         logger.info("开始执行资源的多语种解析并存入数据库！");

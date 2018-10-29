@@ -8,6 +8,7 @@ import com.yonyou.cloud.mwclient.servmeta.annotation.ApiParam;
 import com.yonyou.cloud.mwclient.servmeta.annotation.ApiReturnValue;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
@@ -88,7 +89,7 @@ public interface ITranslateToolsService {
     @ApiOperation("执行国际化工具完成后对资源的数据库保存，主要用于后续的翻译工作")
     public @ApiReturnValue(name = "执行状态", description = "是否执行成功")
     Boolean saveTranslate(@ApiParam(name = "资源", required = true, description = "整体的资源列表") Properties properties,
-                          @ApiParam(name = "资源语种", required = true, description = "语种列表") Map<String, String> map) throws Exception;
+                          @ApiParam(name = "资源语种", required = true, description = "语种列表") List<String> typeList) throws Exception;
 
 
     /**

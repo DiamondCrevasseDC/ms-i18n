@@ -100,7 +100,7 @@ public class I18nToolsService implements II18nToolsService {
      * 添加对项目类型的支持：
      * 主要处理UUI  React的项目
      *
-     * @param sourcePath /iuap/i18ntools/images/***.zip
+     * @param sourcePath  /iuap/i18ntools/images/***.zip
      * @param projectType
      * @return
      * @throws Exception
@@ -125,27 +125,37 @@ public class I18nToolsService implements II18nToolsService {
 
         ZipUtils.unZipForFilePath(sourcePath, path);
 
-        /*********************执行国际化工具的主体方法************************/
-        StepBy sb = new StepBy();
-
-        sb.init(path, projectType);
-
-        sb.extract();
-
-        sb.resource();
-
-        sb.replace();
-
-        /*********************执行文件的压缩供下载使用************************/
-        ZipUtils.zip(new File(zipFile), path);
-
-        logger.info("执行完成后压缩路径：" + zipFile);
-
-        /*********************资源保存完成后添加对数据库的写入操作************************/
         try {
+
+            /*********************执行国际化工具的主体方法************************/
+            StepBy sb = new StepBy();
+
+            sb.init(path, projectType);
+
+            sb.extract();
+
+            sb.resource();
+
+            sb.replace();
+
+            /*********************执行文件的压缩供下载使用************************/
+            ZipUtils.zip(new File(zipFile), path);
+
+            logger.info("执行完成后压缩路径：" + zipFile);
+
+            /*********************资源保存完成后添加对数据库的写入操作************************/
+
             iTranslateToolsService.saveTranslate(sb.getPageNodesProperties(), sb.getMlrts());
+
         } catch (Exception e) {
-            // DO Nothing
+
+
+            // 异常在该部分统一处理
+
+            logger.error(e.getMessage());
+
+            throw e;
+
         }
 
         /*********************返回并写入数据库************************/

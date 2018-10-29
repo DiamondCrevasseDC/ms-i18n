@@ -3,14 +3,16 @@
  */
 package com.yonyou.i18n.core;
 
-import java.io.File;
-import java.util.*;
-import java.util.Map.Entry;
-
+import com.yonyou.i18n.constants.I18nConstants;
 import com.yonyou.i18n.model.MLResElement;
 import com.yonyou.i18n.model.MLResSubstitution;
 import com.yonyou.i18n.model.PageNode;
 import com.yonyou.i18n.utils.*;
+import org.apache.log4j.Logger;
+
+import java.io.File;
+import java.util.*;
+import java.util.Map.Entry;
 
 
 /**
@@ -19,6 +21,8 @@ import com.yonyou.i18n.utils.*;
  * @author wenfa
  */
 public class ExtractChar {
+
+    private static Logger logger = Logger.getLogger(ExtractChar.class);
 
     private String parseProjectPath = ConfigUtils.getPropertyValue("parseProjectPath");
 
@@ -256,91 +260,75 @@ public class ExtractChar {
         ArrayList<MLResSubstitution> substitutions = pageNode.getSubstitutions();
 
         // 针对java文件的处理
-        if ("java".equals(pageNode.getType())) {
+        if (I18nConstants.FILE_TYPE_JAVA.equals(pageNode.getType())) {
 
             pageNode.setAddContent(this.importJavaMessagesStr);
 
-            int flowNumber = 1;
+            setKeyAndReplaceStr(pageNode, this.replaceJavaString);
 
-            String keyPrefix = getKeyPrefix(keyPrefixs, pageNode);
+        } else if (I18nConstants.FILE_TYPE_HTML.equals(pageNode.getType())) {
 
-            for (MLResSubstitution substitution : substitutions) {
+//			pageNode.setAddContent(importHTMLMessagesStr);
 
-                flowNumber++;
+            setKeyAndReplaceStr(pageNode, this.replaceHTMLString);
 
-                // key：通过父级节点的模块名称+“.”+本模块名称+“.”+流水生成
-                String key = keyPrefix + NumberUtils.getSeqNumByLong(new Long(flowNumber), 4);
-
-                substitution.setKey(key);
-
-                // MessageSourceUtil.getMessage(\"{0}\", null, \"{1}\")
-                String replaceStr = this.replaceJavaString.replace("{0}", key).replace("{1}", StringUtils.getStrByDeleteBoundary(substitution.getValue()));
-
-                substitution.setReplaceStr(replaceStr);
-
-                // pageNode
-                substitution.setPageNode(pageNode);
-            }
-
-        } else if ("html".equals(pageNode.getType())) {
-
-//			pageNode.setAddContent(importMessagesStr);
-
-            int flowNumber = 1;
-
-            String keyPrefix = getKeyPrefix(keyPrefixs, pageNode);
-
-            for (MLResSubstitution substitution : substitutions) {
-
-                // key
-                // key：通过父级节点的模块名称+“.”+本模块名称+“.”+流水生成
-                String flowString = NumberUtils.getSeqNumByLong(new Long(flowNumber), 4);
-                String key = keyPrefix + flowString;
-                flowNumber++;
-                substitution.setKey(key);
-
-                // replaceStr
-                // <label class=\"i18n\" name=\"{0}\"/>
-                String replaceStr = this.replaceHTMLString.replace("{0}", key);
-                substitution.setReplaceStr(replaceStr);
-
-                // pageNode
-                substitution.setPageNode(pageNode);
-
-            }
-
-        } else if ("js".equals(pageNode.getType())) {
+        } else if (I18nConstants.FILE_TYPE_JS.equals(pageNode.getType())) {
 
             pageNode.setAddContent(this.importJSMessagesStr);
 
-            int flowNumber = 1;
-            String keyPrefix = getKeyPrefix(keyPrefixs, pageNode);
-//			String keyPrefix = pageNode.getType() +"." + pageNode.getParent().getResModuleName()+"." + pageNode.getResModuleName()+".";
-
-            for (MLResSubstitution substitution : substitutions) {
-
-                // key
-                // key：通过父级节点的模块名称+“.”+本模块名称+“.”+流水生成
-                String flowString = NumberUtils.getSeqNumByLong(new Long(flowNumber), 4);
-                String key = keyPrefix + flowString;
-                flowNumber++;
-                substitution.setKey(key);
-
-                // replaceStr
-                // $.i18n.prop(\'{0}\')
-//				replaceJQueryJSString=$.i18n.prop(\'{0}\', \'{1}\')
-//				replaceReactJSString=intl.get(\'{0}\').defaultMessage(\'{1}\')
-                String replaceStr = this.replaceJSString.replace("{0}", key).replace("{1}", StringUtils.getStrByDeleteBoundary(substitution.getValue()));
-                substitution.setReplaceStr(replaceStr);
-
-                // pageNode
-                substitution.setPageNode(pageNode);
-
-            }
+            setKeyAndReplaceStr(pageNode, this.replaceJSString);
 
         }
 
     }
 
+
+    /**
+     * 清洗资源配置的key及value值，用于后面的资源替换
+     *
+     * @param pageNode
+     * @param replaceString
+     */
+    private void setKeyAndReplaceStr(PageNode pageNode, String replaceString) {
+
+        int flowNumber = 1;
+        String keyPrefix = getKeyPrefix(keyPrefixs, pageNode);
+//			String keyPrefix = pageNode.getType() +"." + pageNode.getParent().getResModuleName()+"." + pageNode.getResModuleName()+".";
+
+        for (MLResSubstitution substitution : pageNode.getSubstitutions()) {
+
+            // key：通过父级节点的模块名称+“.”+本模块名称+“.”+流水生成
+            String key = keyPrefix + NumberUtils.getSeqNumByLong(new Long(flowNumber), 4);
+            flowNumber++;
+
+            substitution.setKey(key);
+
+            // replaceStr
+            // $.i18n.prop(\'{0}\')
+//				replaceJQueryJSString=$.i18n.prop(\'{0}\', \'{1}\')
+//				replaceReactJSString=intl.get(\'{0}\').defaultMessage(\'{1}\')
+//                String replaceStr = this.replaceJSString.replace("{0}", key).replace("{1}", );
+            substitution.setReplaceStr(replaceString(replaceString, key, StringUtils.getStrByDeleteBoundary(substitution.getValue())));
+
+            // pageNode
+            substitution.setPageNode(pageNode);
+
+        }
+
+    }
+
+    /**
+     * @param s
+     * @param r
+     * @return
+     */
+    private String replaceString(String s, String... r) {
+        try {
+            return s.replace("{0}", r[0]).replace("{1}", r[1]);
+        } catch (Exception e) {
+            logger.error("replace string : s:" + s + " and p: " + r);
+        }
+        return "";
+    }
 
 } 

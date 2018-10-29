@@ -104,9 +104,9 @@ public class TranslateToolsService implements ITranslateToolsService {
 
         logger.info("开始执行资源的多语种解析并存入数据库！");
 
-        Iterator<Map.Entry<String, String>> mlrts = null;
+        Iterator<Map.Entry<String, String>> mlrts;
         List<Translate> listData = new ArrayList<Translate>();
-        Translate translate = null;
+        Translate translate;
 
 
         for (String key : properties.stringPropertyNames()) {
@@ -157,7 +157,7 @@ public class TranslateToolsService implements ITranslateToolsService {
 
             String key = translate.getPropertyCode();
 
-            if (key.indexOf(".") >= 0) {
+            if (key != null && key.contains(".")) {
                 key = key.substring(0, key.lastIndexOf("."));
 
                 keyPrefix.add(key);

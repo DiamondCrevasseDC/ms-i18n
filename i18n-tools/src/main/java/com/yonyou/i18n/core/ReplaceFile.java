@@ -82,7 +82,12 @@ public class ReplaceFile {
      */
     private boolean exitExtraHandleFile(PageNode pageNode) {
 
-        return extraHandleJSFile.contains(pageNode.getName());
+        if (pageNode.getName() != null && pageNode.getType() != null) {
+            return extraHandleJSFile.contains(pageNode.getName() + "." + pageNode.getType());
+        } else {
+            return false;
+        }
+
 
     }
 

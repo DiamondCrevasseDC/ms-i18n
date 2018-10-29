@@ -56,6 +56,8 @@ public class ExtractChar {
      * init
      */
     private void init() {
+        logger.info("print the whole props info:");
+        logger.info(ConfigUtils.props);
 
         if ("React".equalsIgnoreCase(this.projectType)) {
 

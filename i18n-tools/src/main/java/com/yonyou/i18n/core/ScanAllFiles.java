@@ -38,6 +38,12 @@ public class ScanAllFiles {
 
     }
 
+    public ScanAllFiles(String path, String projectType, String scanFileType) {
+
+        init(path, projectType, scanFileType);
+
+    }
+
     private void init(String path) {
 
         if (path != null && !"".equals(path)) {
@@ -54,15 +60,27 @@ public class ScanAllFiles {
      */
     private void init(String path, String projectType) {
 
-        // TODO
-        if (path != null && !"".equals(path)) {
-            this.parseProjectPath = path;
-            ConfigUtils.props.setProperty("parseProjectPath", path);
-        }
+        init(path);
 
         if (projectType != null && !"".equals(projectType)) {
             this.projectType = projectType;
             ConfigUtils.props.setProperty("projectType", projectType);
+        }
+    }
+
+    /**
+     * 添加对项目类型的支持
+     *
+     * @param path        解析路径
+     * @param projectType 项目类型
+     */
+    private void init(String path, String projectType, String scanFileType) {
+
+        init(path, projectType);
+
+        if (scanFileType != null && !"".equals(scanFileType)) {
+            this.scanFileType = scanFileType;
+            ConfigUtils.props.setProperty("scanFileType", scanFileType);
         }
     }
 

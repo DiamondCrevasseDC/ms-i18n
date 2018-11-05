@@ -94,15 +94,6 @@ public class FilesUtils {
 
     public static void main(String[] args) {
 
-        String path = "D:\\workspace\\iuap_poc\\zhongxing-poc\\iuap_pap_quickstart\\src\\main\\java\\com\\yonyou\\iuap\\example\\orders\\web";
-
-        try {
-            dirFileList(path, "java,js");
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
     }
 
 

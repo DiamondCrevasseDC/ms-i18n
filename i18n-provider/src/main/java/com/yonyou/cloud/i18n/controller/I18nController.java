@@ -116,6 +116,9 @@ public class I18nController extends GenericController<I18n> {
 
             I18n i18n = this.i18nService.findById(listData.get(0).getId());
 
+            // 先赋空，然后再写入
+            i18n.setAttachId("");
+            this.i18nService.save(i18n);
 
             // 远程调用时传递过去的是绝对路径(即磁盘路径)，确保服务可以正常访问
             String path = PropertyUtil.getPropertyByKey("storeDir") + File.separator + i18n.getAttachment().get(0).getFileName();
@@ -125,6 +128,10 @@ public class I18nController extends GenericController<I18n> {
             String projectType = "React";
             if("1".equalsIgnoreCase(i18n.getProjectType())){
                 projectType = "JQuery";
+            }else if("2".equalsIgnoreCase(i18n.getProjectType())){
+                projectType = "React";
+            }else if("3".equalsIgnoreCase(i18n.getProjectType())){
+                projectType = "Properties";
             }
 
             String zipFile = this.i18nToolsService.operation(path, projectType);

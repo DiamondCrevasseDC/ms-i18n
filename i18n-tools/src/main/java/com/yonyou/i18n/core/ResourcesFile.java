@@ -6,10 +6,7 @@ import com.yonyou.i18n.constants.I18nConstants;
 import com.yonyou.i18n.model.MLResSubstitution;
 import com.yonyou.i18n.model.OrderedProperties;
 import com.yonyou.i18n.model.PageNode;
-import com.yonyou.i18n.utils.ConfigUtils;
-import com.yonyou.i18n.utils.Helper;
-import com.yonyou.i18n.utils.StringUtils;
-import com.yonyou.i18n.utils.TranslateUtils;
+import com.yonyou.i18n.utils.*;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -57,7 +54,28 @@ public class ResourcesFile {
     /**
      * 初始化
      */
-    private void init() {
+    public void init() {
+
+        // 确定生成的文件类型
+        if (I18nConstants.REACT_PROJECT_TYPE.equalsIgnoreCase(this.projectType)) {
+
+            mlrtMap = StringUtils.getResourceFileList(resourcePrefix, multiLangType, reactResourcePostfix);
+        } else {
+            mlrtMap = StringUtils.getResourceFileList(resourcePrefix, multiLangType, jQueryResourcePostfix);
+        }
+
+
+    }
+
+    /**
+     * 初始化
+     */
+    public void init(String multiLangType) {
+
+        if (multiLangType != null && !"".equals(multiLangType)) {
+            this.multiLangType = multiLangType;
+//            ConfigUtils.props.setProperty("multiLangType", multiLangType);
+        }
 
         // 确定生成的文件类型
         if (I18nConstants.REACT_PROJECT_TYPE.equalsIgnoreCase(this.projectType)) {
@@ -102,6 +120,116 @@ public class ResourcesFile {
         }
     }
 
+
+    /**
+     * 将简体中文的资源识别后进行翻译并写入繁体资源文件中
+     * <p>
+     * 具体的目录按照简体的目录进行定义
+     *
+     * @param pageNodes 资源
+     */
+    public void translateResourceFileByDirectory(List<PageNode> pageNodes) {
+
+
+        logger.info("开始写入项目路径下的单体资源文件！");
+
+        Iterator<Entry<String, String>> mlrts;
+
+        // 将资源文件放到locales目录下
+        // 将资源文件放到分层的目录下
+        for (PageNode pageNode : pageNodes) {
+
+            if (pageNode.isFile() && pageNode.getName().contains("zh_CN.properties")) {
+
+
+                File file = new File(pageNode.getPath());
+
+
+                File fileBack = new File(pageNode.getPath().replace("zh_CN", "zh_TW"));
+
+                LineNumberReader reader = null;
+                BufferedWriter writer = null;
+                try {
+                    // 原始文件编码，确保读写前后的编码一致性
+                    String encoding = TextUtils.getFileCharset(file);
+
+                    reader = new LineNumberReader(new InputStreamReader(new FileInputStream(file), encoding));
+
+
+                    ////////////////////////////////////////////////////////////////////////////////////////
+                    ///////////////////////直接通过通用API进行简体到繁体的转化///////////////////////////
+                    ////////////////////////////////////////////////////////////////////////////////////////
+
+
+//                    // 按照类型生成文件
+//                    mlrts = this.mlrtMap.entrySet().iterator();
+//
+//                    while (mlrts.hasNext()) {
+//
+//                        Entry<String, String> mlrt = mlrts.next();
+//                        String locales = mlrt.getKey();
+//
+//                        fileBack = new File(pageNode.getPath().substring(0, pageNode.getPath().lastIndexOf("////")) + File.separator + mlrt.getValue());
+//
+//                        logger.info("------单体资源文件路径为： " + file.getAbsolutePath());
+//
+//                    }
+
+
+                    StringBuilder sb = new StringBuilder();
+                    String lineInfo;
+
+                    while ((lineInfo = reader.readLine()) != null) {
+
+                        sb.append(TranslateUtils.transByLocales(lineInfo, "zh_TW")).append(Helper.getLineDelimiter());
+
+                    }
+
+
+                    ////////////////////////////////////////////////////////////////////////////////////////
+                    ///////////////////////按照不同的文件类型进行文件的替换写入----结束///////////////////////////
+                    ////////////////////////////////////////////////////////////////////////////////////////
+
+                    // 写成与原文格式一致的文件encoding
+                    fileBack.createNewFile();
+                    writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileBack), encoding));
+
+                    writer.write(sb.toString());
+                    writer.flush();
+
+                    reader.close();
+                    writer.close();
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                } finally {
+
+                    closeStream(reader, writer);
+                }
+            }
+
+        }
+
+    }
+
+    /**
+     * 关闭流
+     *
+     * @param reader 输入流
+     * @param writer 写入流
+     */
+    private void closeStream(LineNumberReader reader, BufferedWriter writer) {
+
+        //关闭文件流对象
+        try {
+            if (reader != null)
+                reader.close();
+            if (writer != null)
+                writer.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 将抽取出来的资源写入单体资源文件中（分目录）

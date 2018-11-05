@@ -15,6 +15,8 @@ public class I18nConstants {
     public static final String FILE_BACKUP_POSTFIX = ".bak";
     public static final String FILE_TEMPORARY_POSTFIX = ".temp";
 
+    public static final String FILE_ZIP_POSTFIX = ".zip";
+
     public static final String FILE_TYPE_JAVA = "java";
     public static final String FILE_TYPE_HTML = "html";
     public static final String FILE_TYPE_JS = "js";

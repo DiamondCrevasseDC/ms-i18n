@@ -3,6 +3,7 @@ package com.yonyou.cloud.i18n.controller;
 import com.yonyou.cloud.i18n.entity.I18n;
 import com.yonyou.cloud.i18n.service.I18nToolsService;
 import com.yonyou.cloud.i18n.service.I18nService;
+import com.yonyou.i18n.constants.I18nConstants;
 import com.yonyou.iuap.baseservice.controller.GenericController;
 import com.yonyou.iuap.mvc.annotation.FrontModelExchange;
 import com.yonyou.iuap.mvc.type.SearchParams;
@@ -116,32 +117,36 @@ public class I18nController extends GenericController<I18n> {
 
             I18n i18n = this.i18nService.findById(listData.get(0).getId());
 
-            // 先赋空，然后再写入
-            i18n.setAttachId("");
-            this.i18nService.save(i18n);
+//            // 先赋空，然后再写入
+//            i18n.setAttachId("");
+//            this.i18nService.save(i18n);
 
             // 远程调用时传递过去的是绝对路径(即磁盘路径)，确保服务可以正常访问
             String path = PropertyUtil.getPropertyByKey("storeDir") + File.separator + i18n.getAttachment().get(0).getFileName();
 
+            String zipPath = path.substring(0, path.lastIndexOf(".")) + "_" + System.currentTimeMillis();
+
+
             // 1: JQuery   2: React
             // projectType=JQuery
             String projectType = "React";
-            if("1".equalsIgnoreCase(i18n.getProjectType())){
+            if ("1".equalsIgnoreCase(i18n.getProjectType())) {
                 projectType = "JQuery";
-            }else if("2".equalsIgnoreCase(i18n.getProjectType())){
+            } else if ("2".equalsIgnoreCase(i18n.getProjectType())) {
                 projectType = "React";
-            }else if("3".equalsIgnoreCase(i18n.getProjectType())){
+            } else if ("3".equalsIgnoreCase(i18n.getProjectType())) {
                 projectType = "Properties";
             }
 
-            String zipFile = this.i18nToolsService.operation(path, projectType);
-
-            zipFile = zipFile.substring(zipFile.lastIndexOf("/") + 1);
-
-            // 保存时存放是相对的可以直接下载的路径（）
-            String f = i18n.getAttachment().get(0).getAccessAddress();
-            f = f.substring(0, f.lastIndexOf("/")) + File.separator +  zipFile;
-            i18n.setAttachId(f);
+            this.i18nToolsService.operation(path, zipPath, projectType);
+//            String zipFile = this.i18nToolsService.operation(path, projectType);
+//
+//            zipFile = zipFile.substring(zipFile.lastIndexOf("/") + 1);
+//
+//            // 保存时存放是相对的可以直接下载的路径（）
+//            String f = i18n.getAttachment().get(0).getAccessAddress();
+//            f = f.substring(0, f.lastIndexOf("/")) + File.separator +  zipFile;
+            i18n.setAttachId(zipPath + I18nConstants.FILE_ZIP_POSTFIX);
 
             this.i18nService.save(i18n);
 
@@ -150,7 +155,7 @@ public class I18nController extends GenericController<I18n> {
         }
 
         long e = System.currentTimeMillis();
-        logger.info("项目工程执行结束时间：" + e + " , 共耗时： " + (e-s)/1000);
+        logger.info("项目工程执行结束时间：" + e + " , 共耗时： " + (e - s) / 1000);
         return super.buildSuccess();
     }
 

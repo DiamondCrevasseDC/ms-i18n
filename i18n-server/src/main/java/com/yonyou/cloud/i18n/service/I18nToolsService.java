@@ -155,6 +155,67 @@ public class I18nToolsService implements II18nToolsService {
 
     }
 
+
+    /**
+     * 添加对项目类型的支持：
+     * 主要处理UUI  React的项目
+     * <p>
+     * 添加对资源简体转繁体的支持
+     *
+     * @param sourcePath  /iuap/i18ntools/images/***.zip
+     * @param projectType
+     * @return
+     * @throws Exception
+     */
+    @Override
+    public void operateTools(String sourcePath, String path, String projectType) throws Exception {
+
+        /********************采用静态对象保存所有key的前缀*************************/
+        // 原则上一个运行的服务只需要执行一次
+        new ExtractChar().setKeyPrefixs(iTranslateToolsService.getCode());
+
+        /********************执行上传文件的解压缩*************************/
+        logger.info("识别文件：" + sourcePath);
+
+//        String path = sourcePath.substring(0, sourcePath.lastIndexOf(".")) + "_" + System.currentTimeMillis();
+
+        String zipFile = path + I18nConstants.FILE_ZIP_POSTFIX;
+
+        path = path + "/";
+
+        logger.info("解压缩路径：" + path);
+
+        ZipUtils.unZipForFilePath(sourcePath, path);
+
+        try {
+
+            logger.info("开始执行核心功能！");
+            if (I18nConstants.PROPERTIES_PROJECT_TYPE.equalsIgnoreCase(projectType)) {
+                simp2trad(path, projectType);
+            } else {
+                i18ntools(path, projectType);
+            }
+            logger.info("执行核心功能结束！");
+
+        } catch (Exception e) {
+            // 异常在该部分统一处理
+
+            logger.error(e.getMessage());
+
+            throw e;
+
+        }
+
+        /*********************执行文件的压缩供下载使用************************/
+        ZipUtils.zip(new File(zipFile), path);
+
+        logger.info("执行完成后压缩路径：" + zipFile);
+
+
+    }
+
+
+
     /**
      * 与jar执行国际化的工具一致，该部分被动调用
      *

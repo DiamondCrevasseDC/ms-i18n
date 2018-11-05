@@ -46,4 +46,15 @@ public class I18nToolsService {
         return callback;
     }
 
+    /**
+     * @param path
+     * @return
+     * @throws Exception
+     */
+    public void operation(String path, String zipPath, String projectType) throws Exception {
+
+        this.i18nToolsService.operateTools(path, zipPath, projectType);
+
+    }
+
 }

@@ -23,6 +23,7 @@
 	    	<list>
 	        	<value>com.yonyou.cloud.i18n.service.II18nService</value>
 				<value>com.yonyou.cloud.i18n.service.II18nToolsService</value>
+				<value>com.yonyou.cloud.i18n.service.ITranslateToolsService</value>
 	        </list>
 	    </constructor-arg>
 	</bean>

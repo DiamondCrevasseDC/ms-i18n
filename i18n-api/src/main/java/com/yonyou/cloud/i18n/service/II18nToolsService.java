@@ -20,12 +20,13 @@ public interface II18nToolsService {
     /**
      * provider -> server
      * 国际化工具执行
-     * 异步调用，该部分执行时间较长。
+     * delete 异步调用，该部分执行时间较长。
+     * add 最终的数据路径需要保存到数据库
      *
      * @param sourcePath /iuap/i18ntools/images/***.zip
      * @return 返回路径
      */
-    @Async
+//    @Async
     @ApiOperation("根据路径执行国际化工具")
     public @ApiReturnValue(name = "返回路径", description = "国际化工具执行完成后的回写路径")
     String operateTools(@ApiParam(name = "原始路径", required = true, description = "需要国际化工具处理的项目的完整路径，最好是服务器本地路径", exampleValue = "/iuap/i18ntools/images/***.zip") String sourcePath) throws Exception;
@@ -34,13 +35,14 @@ public interface II18nToolsService {
     /**
      * provider -> server
      * 国际化工具执行
-     * 异步调用，该部分执行时间较长。
+     * delete 异步调用，该部分执行时间较长。
+     * add 最终的数据路径需要保存到数据库
      *
      * @param sourcePath /iuap/i18ntools/images/***.zip
      * @param projectType
      * @return 返回路径
      */
-    @Async
+//    @Async
     @ApiOperation("根据路径执行国际化工具")
     public @ApiReturnValue(name = "返回路径", description = "国际化工具执行完成后的回写路径")
     String operateTools(@ApiParam(name = "原始路径", required = true, description = "需要国际化工具处理的项目的完整路径，最好是服务器本地路径", exampleValue = "/iuap/i18ntools/images/***.zip") String sourcePath,

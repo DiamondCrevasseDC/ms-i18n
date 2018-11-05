@@ -139,14 +139,16 @@ public class I18nController extends GenericController<I18n> {
             }
 
             this.i18nToolsService.operation(path, zipPath, projectType);
+
 //            String zipFile = this.i18nToolsService.operation(path, projectType);
 //
-//            zipFile = zipFile.substring(zipFile.lastIndexOf("/") + 1);
-//
-//            // 保存时存放是相对的可以直接下载的路径（）
-//            String f = i18n.getAttachment().get(0).getAccessAddress();
-//            f = f.substring(0, f.lastIndexOf("/")) + File.separator +  zipFile;
-            i18n.setAttachId(zipPath + I18nConstants.FILE_ZIP_POSTFIX);
+            zipPath = zipPath.substring(zipPath.lastIndexOf("/") + 1) + I18nConstants.FILE_ZIP_POSTFIX;
+
+            // 保存时存放是相对的可以直接下载的路径（）
+            String f = i18n.getAttachment().get(0).getAccessAddress();
+            f = f.substring(0, f.lastIndexOf("/")) + File.separator +  zipPath;
+
+            i18n.setAttachId(f);
 
             this.i18nService.save(i18n);
 

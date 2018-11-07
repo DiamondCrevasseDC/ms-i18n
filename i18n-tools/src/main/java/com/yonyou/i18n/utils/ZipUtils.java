@@ -49,10 +49,13 @@ public class ZipUtils {
 
             out = new ZipOutputStream(new FileOutputStream(zipFile));
 
-            out.setEncoding("UTF-8");
+//            out.setEncoding("UTF-8");
+            out.setEncoding(System.getProperty("sun.jnu.encoding"));
 
             zip(out, f, "");
 
+            out.close();
+            out = null;
         } catch (Exception e) {
             log.error("压缩文件不存在!" + inputFile, e);
         } finally {
@@ -111,8 +114,11 @@ public class ZipUtils {
 
             File[] fl = f.listFiles();
 
-            out.putNextEntry(new ZipEntry(base + "/"));
+            // 第一层目录为空，不用加/
             base = base.length() == 0 ? "" : base + "/";
+
+            out.putNextEntry(new ZipEntry(base));
+
 
             for (i = 0; i < fl.length; ++i) {
                 zip(out, fl[i], base + fl[i].getName());
@@ -127,7 +133,7 @@ public class ZipUtils {
                 in = new FileInputStream(f);
                 byte[] buf = new byte[BUFFER];
 
-                while ((i = in.read(buf, 0, BUFFER)) != -1) {
+                while ((i = in.read(buf)) != -1) {
                     out.write(buf, 0, i);
                 }
 
@@ -490,12 +496,21 @@ public class ZipUtils {
     }
 
     public static void main(String[] args) {
-        List<String> filter = new ArrayList();
-        filter.add("3RDPARTY");
-        filter.add("BANNER.GIF");
+//        List<String> filter = new ArrayList();
+//        filter.add("3RDPARTY");
+//        filter.add("BANNER.GIF");
 
         try {
-            zipAppendFile("D:\\upload\\project\\402886b335ebb0470135ebbaea7d0014\\purFile\\公共资源交易中心.GZBS", "d:\\temp\\2.doc");
+
+//            String path = "/Users/yanyong/temp/iuap-pap-baseservice-develop";// + "_" + System.currentTimeMillis();
+
+            String path = "/Users/yanyong/Downloads/wbalone";
+            String zipFile = path + ".zip";
+
+            ZipUtils.zip(new File(zipFile), path);
+
+
+//            zipAppendFile("D:\\upload\\project\\402886b335ebb0470135ebbaea7d0014\\purFile\\公共资源交易中心.GZBS", "d:\\temp\\2.doc");
         } catch (Exception var3) {
             var3.printStackTrace();
         }

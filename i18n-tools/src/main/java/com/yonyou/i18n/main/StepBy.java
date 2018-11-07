@@ -214,7 +214,7 @@ public class StepBy {
         String sourcePath = "/Users/yanyong/temp/iuap-pap-baseservice-develop/java.zip";
         String path = "/Users/yanyong/temp/iuap-pap-baseservice-develop";// + "_" + System.currentTimeMillis();
 
-        path = "/Users/yanyong/Downloads/react_example_fe--old";
+        path = "/Users/yanyong/Downloads/wbalone";
         String zipFile = path + ".zip";
 
         try {
@@ -223,7 +223,7 @@ public class StepBy {
 
             StepBy sb = new StepBy();
 
-            sb.init(path, "React");
+            sb.init(path, "JQuery");
 
             sb.extract();
 

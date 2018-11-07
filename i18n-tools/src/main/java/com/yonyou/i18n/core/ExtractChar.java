@@ -326,9 +326,15 @@ public class ExtractChar {
      */
     private String replaceString(String s, String... r) {
         try {
-            return s.replace("{0}", r[0]).replace("{1}", r[1]);
+            return s.replaceAll("\\{0\\}", r[0]).replaceAll("\\{1\\}", r[1]);
         } catch (Exception e) {
             logger.error("replace string : s:" + s + " and p: " + r);
+
+            try {
+                return s.replace("{0}", r[0]).replace("{1}", r[1]);
+            } catch (Exception e2) {
+                logger.error("replace string : s:" + s + " and p: " + r);
+            }
         }
         return "";
     }

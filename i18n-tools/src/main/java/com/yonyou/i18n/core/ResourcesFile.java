@@ -416,7 +416,8 @@ public class ResourcesFile {
                     String v = rs.getValue();
                     if (v.length() <= 2) continue;
 
-                    object.addProperty(rs.getKey(), Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(v)) + locales);
+                    object.addProperty(rs.getKey(), TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(v)), locales));
+
                 }
             }
 
@@ -469,7 +470,7 @@ public class ResourcesFile {
                 String v = rs.getValue();
                 if (v.length() <= 2) continue;
 
-                object.addProperty(rs.getKey(), Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(v)) + locales);
+                object.addProperty(rs.getKey(), TranslateUtils.transByLocales(Helper.unwindEscapeChars(StringUtils.getStrByDeleteBoundary(v)), locales));
 
             }
 

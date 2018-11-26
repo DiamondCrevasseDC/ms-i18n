@@ -8,6 +8,7 @@ import com.yonyou.cloud.translate.service.TranslateService;
 import com.yonyou.i18n.constants.I18nConstants;
 import com.yonyou.i18n.main.TranslateEnglish;
 import com.yonyou.i18n.utils.Helper;
+import com.yonyou.i18n.utils.ZipUtils;
 import com.yonyou.iuap.baseservice.controller.GenericController;
 import com.yonyou.iuap.mvc.annotation.FrontModelExchange;
 import com.yonyou.iuap.mvc.type.SearchParams;
@@ -145,13 +146,29 @@ public class I18nController extends GenericController<I18n> {
 
                 // add by yy 20181123
                 projectType = "English";
+
+
+                /********************执行上传文件的解压缩*************************/
+                logger.info("识别文件：" + path);
+
+//        String path = sourcePath.substring(0, sourcePath.lastIndexOf(".")) + "_" + System.currentTimeMillis();
+
+//                String zipFile = zipPath + I18nConstants.FILE_ZIP_POSTFIX;
+
+                zipPath = zipPath + "/";
+
+                logger.info("解压缩路径：" + zipPath);
+
+                ZipUtils.unZipForFilePath(path, zipPath);
+
+
                 // 第一次执行时将文件导入数据库： 首先解析上传的文件中存在的zh_CN.properties\zh_CN.json的文件，将解析的对象保持为list，然后调用save接口保持数据库。
 
                 TranslateEnglish sb = new TranslateEnglish();
 
-                sb.init(path, "English", "properties,json");
+                sb.init(zipPath, "English", "properties,json");
 
-                Properties properties = sb.getOrderedProperties(path);
+                Properties properties = sb.getOrderedProperties(zipPath);
 
                 // 通过判断是否存在资源数据库来确定是第一次还是第二次执行
                 Boolean haveInsert = false;

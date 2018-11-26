@@ -54,8 +54,8 @@ public class ResourceFileUtil {
         _this.initFileContent();
         _this.initFileProps();
         _this.files.clear();
-        _this.initCorpus();
-        _this.macherCorpus();
+//        _this.initCorpus();
+//        _this.macherCorpus();
 //    		_this.writeResourceFile();
         _this.fileContent = null;
 //    		_this.fileDescs = null;
@@ -335,6 +335,15 @@ public class ResourceFileUtil {
         return _this.prop.get(key).toString();
     }
 
+
+    /**
+     * 返回资源
+     *
+     * @return
+     */
+    public OrderedProperties getProps() {
+        return _this.prop;
+    }
 
     /**
      * 文件编码

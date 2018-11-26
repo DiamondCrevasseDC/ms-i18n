@@ -3,7 +3,7 @@ package com.yonyou.cloud.i18n.service;
 import com.yonyou.i18n.constants.I18nConstants;
 import com.yonyou.i18n.core.ExtractChar;
 import com.yonyou.i18n.main.StepBy;
-import com.yonyou.i18n.main.Translate;
+import com.yonyou.i18n.main.TranslateTraditional;
 import com.yonyou.i18n.utils.ZipUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -69,7 +69,7 @@ public class I18nToolsService implements II18nToolsService {
             // 按照类型生成文件
 //            Iterator<Map.Entry<String, String>> mlrts = sb.getMlrts();
 //
-////            List<Translate> list = new ArrayList<Translate>();
+////            List<TranslateTraditional> list = new ArrayList<TranslateTraditional>();
 //            while (mlrts.hasNext()) {
 //                Map.Entry<String, String> mlrt = mlrts.next();
 //                String locales = mlrt.getKey();
@@ -108,6 +108,7 @@ public class I18nToolsService implements II18nToolsService {
      * @return
      * @throws Exception
      */
+    @Deprecated
     @Override
     public String operateTools(String sourcePath, String projectType) throws Exception {
 
@@ -237,13 +238,14 @@ public class I18nToolsService implements II18nToolsService {
         sb.replace();
 
         /*********************资源保存完成后添加对数据库的写入操作************************/
+        /*********************20181126 delete 需要开发人员手工的添加对资源的处理： 即简体转英文的处理方式************************/
         // TODO 该异常暂时吃掉
-        try {
-            iTranslateToolsService.saveTranslate(sb.getPageNodesProperties(), sb.getMlrts());
-        } catch (Exception e) {
-            logger.error("++++抽取的资源保存失败+++", e);
-            e.printStackTrace();
-        }
+//        try {
+//            iTranslateToolsService.saveTranslate(sb.getPageNodesProperties(), sb.getMlrts());
+//        } catch (Exception e) {
+//            logger.error("++++抽取的资源保存失败+++", e);
+//            e.printStackTrace();
+//        }
     }
 
 
@@ -259,9 +261,9 @@ public class I18nToolsService implements II18nToolsService {
     private void simp2trad(String path, String projectType) throws Exception {
 
         /*********************执行国际化工具的主体方法************************/
-        Translate sb = new Translate();
+        TranslateTraditional sb = new TranslateTraditional();
 
-        sb.init(path, "properties", "properties");
+        sb.init(path, "properties", "properties,json");
 
         sb.resource();
 

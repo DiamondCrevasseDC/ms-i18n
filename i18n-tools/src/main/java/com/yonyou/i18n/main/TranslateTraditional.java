@@ -16,7 +16,7 @@ import java.util.List;
  *
  * @author wenfan
  */
-public class Translate {
+public class TranslateTraditional {
 
 
     private static Logger logger = Logger.getLogger(StepBy.class);
@@ -88,9 +88,9 @@ public class Translate {
 
         try {
 
-            Translate sb = new Translate();
+            TranslateTraditional sb = new TranslateTraditional();
 
-            sb.init(path, "properties", "properties");
+            sb.init(path, "properties", "properties,json");
 
             sb.resource();
 

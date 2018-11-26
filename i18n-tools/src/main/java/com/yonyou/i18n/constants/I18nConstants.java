@@ -10,7 +10,8 @@ public class I18nConstants {
     public static final String REACT_PROJECT_TYPE = "React";
     public static final String JQUERY_PROJECT_TYPE = "JQuery";
 
-    public static final String PROPERTIES_PROJECT_TYPE = "Properties";
+    public static final String PROPERTIES_PROJECT_TYPE = "Properties";//简体转繁体
+    public static final String ENGLISH_PROJECT_TYPE = "English";//简体转英文
 
     public static final String FILE_BACKUP_POSTFIX = ".bak";
     public static final String FILE_TEMPORARY_POSTFIX = ".temp";

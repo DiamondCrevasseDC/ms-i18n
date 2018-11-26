@@ -1,6 +1,6 @@
 //package com.yonyou.cloud.i18n.utils;
 //
-//import com.yonyou.cloud.translate.entity.Translate;
+//import com.yonyou.cloud.translate.entity.TranslateTraditional;
 //import com.yonyou.i18n.model.MLResSubstitution;
 //import com.yonyou.i18n.model.PageNode;
 //import com.yonyou.i18n.utils.Helper;
@@ -18,14 +18,14 @@
 //    private static final Logger logger = LoggerFactory.getLogger(PropertiesUtils.class);
 //
 //
-//    public List<Translate> prop2Entity(Properties properties) throws Exception {
+//    public List<TranslateTraditional> prop2Entity(Properties properties) throws Exception {
 //
-//        List<Translate> listData = new ArrayList<Translate>();
-//        Translate translate = null;
+//        List<TranslateTraditional> listData = new ArrayList<TranslateTraditional>();
+//        TranslateTraditional translate = null;
 //
 //        for (String key : properties.stringPropertyNames()) {
 //
-//            translate = new Translate();
+//            translate = new TranslateTraditional();
 //            translate.setPropertyCode(key);
 //            translate.setChinese(properties.getProperty(key));
 //
@@ -36,12 +36,12 @@
 //    }
 //
 //
-//    public static void pageNodes2Entity(List<Translate> listData, List<PageNode> pageNodes, String locales) throws Exception {
+//    public static void pageNodes2Entity(List<TranslateTraditional> listData, List<PageNode> pageNodes, String locales) throws Exception {
 //
 //        logger.info("开始执行资源到对象的封装！");
 //
 //
-//        Translate translate = null;
+//        TranslateTraditional translate = null;
 //
 //        // 新建对象
 //        for (PageNode pageNode : pageNodes) {
@@ -50,7 +50,7 @@
 //            for (MLResSubstitution rs : rss) {
 //                // 在写入资源文件时，去掉前后的界定符号
 //
-//                translate = new Translate();
+//                translate = new TranslateTraditional();
 //
 //                String v = rs.getValue();
 //                if (v.length() <= 2) continue;

@@ -1,9 +1,13 @@
 package com.yonyou.cloud.i18n.controller;
 
 import com.yonyou.cloud.i18n.entity.I18n;
-import com.yonyou.cloud.i18n.service.I18nToolsService;
 import com.yonyou.cloud.i18n.service.I18nService;
+import com.yonyou.cloud.i18n.service.I18nToolsService;
+import com.yonyou.cloud.translate.entity.Translate;
+import com.yonyou.cloud.translate.service.TranslateService;
 import com.yonyou.i18n.constants.I18nConstants;
+import com.yonyou.i18n.main.TranslateEnglish;
+import com.yonyou.i18n.utils.Helper;
 import com.yonyou.iuap.baseservice.controller.GenericController;
 import com.yonyou.iuap.mvc.annotation.FrontModelExchange;
 import com.yonyou.iuap.mvc.type.SearchParams;
@@ -21,9 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 说明：国际化 基础Controller——提供数据增、删、改、查、导入导出等rest接口
@@ -46,13 +48,16 @@ public class I18nController extends GenericController<I18n> {
 
     private I18nToolsService i18nToolsService;
 
-//    public I18nServiceImpl getI18nServiceImpl() {
-//        return i18nServiceImpl;
-//    }
-
     @Autowired
     public void setI18nServiceImpl(I18nToolsService i18nToolsService) {
         this.i18nToolsService = i18nToolsService;
+    }
+
+    private TranslateService translateService;
+
+    @Autowired
+    public void setTranslateService(TranslateService translateService) {
+        this.translateService = translateService;
     }
 
     @Override
@@ -136,6 +141,45 @@ public class I18nController extends GenericController<I18n> {
                 projectType = "React";
             } else if ("3".equalsIgnoreCase(i18n.getProjectType())) {
                 projectType = "Properties";
+            } else if ("4".equalsIgnoreCase(i18n.getProjectType())) {
+
+                // add by yy 20181123
+                projectType = "English";
+                // 第一次执行时将文件导入数据库： 首先解析上传的文件中存在的zh_CN.properties\zh_CN.json的文件，将解析的对象保持为list，然后调用save接口保持数据库。
+
+                TranslateEnglish sb = new TranslateEnglish();
+
+                sb.init(path, "English", "properties,json");
+
+                Properties properties = sb.getOrderedProperties(path);
+
+                // 通过判断是否存在资源数据库来确定是第一次还是第二次执行
+                Boolean haveInsert = false;
+                for (String key : properties.stringPropertyNames()) {
+
+                    if (this.translateService.findByCode(key) != null) {
+                        haveInsert = true;
+                    }
+                    break;
+                }
+
+
+                if (!haveInsert) {
+                    saveTranslate(properties);
+
+                    return super.buildSuccess();
+
+                } else {
+
+
+                    // 第二次执行时将翻译后的内容按文件的格式写出并生成文件
+                    // TODO
+
+                    return super.buildSuccess();
+
+                }
+
+
             }
 
             this.i18nToolsService.operation(path, zipPath, projectType);
@@ -146,7 +190,7 @@ public class I18nController extends GenericController<I18n> {
 
             // 保存时存放是相对的可以直接下载的路径（）
             String f = i18n.getAttachment().get(0).getAccessAddress();
-            f = f.substring(0, f.lastIndexOf("/")) + File.separator +  zipPath;
+            f = f.substring(0, f.lastIndexOf("/")) + File.separator + zipPath;
 
             i18n.setAttachId(f);
 
@@ -159,6 +203,39 @@ public class I18nController extends GenericController<I18n> {
         long e = System.currentTimeMillis();
         logger.info("项目工程执行结束时间：" + e + " , 共耗时： " + (e - s) / 1000);
         return super.buildSuccess();
+    }
+
+
+    /**
+     * 根据原始资源信息写入翻译数据表，以供其他语种的翻译
+     *
+     * @param properties
+     * @return
+     * @throws Exception
+     */
+    public Boolean saveTranslate(Properties properties) throws Exception {
+
+        logger.info("开始执行原始资源信息解析并存入数据库！");
+
+        List<Translate> listData = new ArrayList<Translate>();
+        Translate translate;
+
+        for (String key : properties.stringPropertyNames()) {
+
+            translate = new Translate();
+            translate.setPropertyCode(key);
+
+            translate.setChinese(Helper.unwindEscapeChars(properties.getProperty(key)));
+
+            listData.add(translate);
+        }
+
+        this.translateService.saveBatch(listData);
+
+        logger.info("执行资源写入数据库完成！");
+
+        return true;
+
     }
 
 }

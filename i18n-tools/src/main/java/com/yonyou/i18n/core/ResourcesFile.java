@@ -139,7 +139,7 @@ public class ResourcesFile {
         // 将资源文件放到分层的目录下
         for (PageNode pageNode : pageNodes) {
 
-            if (pageNode.isFile() && pageNode.getName().contains("zh_CN.properties")) {
+            if (pageNode.isFile() && (pageNode.getName().contains("zh_CN.properties") || pageNode.getName().contains("zh_CN.json"))) {
 
 
                 File file = new File(pageNode.getPath());

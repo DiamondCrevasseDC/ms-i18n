@@ -36,6 +36,7 @@ public class I18nToolsService {
      * @return
      * @throws Exception
      */
+    @Deprecated
     public String operation(String path, String projectType) throws Exception {
 
 

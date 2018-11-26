@@ -37,11 +37,11 @@ public class TranslateToolsService implements ITranslateToolsService {
 //
 //        logger.info("开始执行资源写入");
 //
-//        List<Translate> listData = new ArrayList<Translate>();
-//        Translate translate = null;
+//        List<TranslateTraditional> listData = new ArrayList<TranslateTraditional>();
+//        TranslateTraditional translate = null;
 //        for (String key : properties.stringPropertyNames()) {
 //
-//            translate = new Translate();
+//            translate = new TranslateTraditional();
 //            translate.setPropertyCode(key);
 //            translate.setChinese(properties.getProperty(key));
 //
@@ -154,13 +154,13 @@ public class TranslateToolsService implements ITranslateToolsService {
 //        logger.info("开始执行资源的多语种解析并存入数据库！");
 //
 //        Iterator<Map.Entry<String, String>> mlrts;
-//        List<Translate> listData = new ArrayList<Translate>();
-//        Translate translate;
+//        List<TranslateTraditional> listData = new ArrayList<TranslateTraditional>();
+//        TranslateTraditional translate;
 //
 //
 //        for (String key : properties.stringPropertyNames()) {
 //
-//            translate = new Translate();
+//            translate = new TranslateTraditional();
 //            translate.setPropertyCode(key);
 ////            translate.setChinese(properties.getProperty(key));
 //
@@ -217,7 +217,7 @@ public class TranslateToolsService implements ITranslateToolsService {
     }
 
 //    @Override
-//    public Boolean saveTranslate(List<Translate> list) throws Exception {
+//    public Boolean saveTranslate(List<TranslateTraditional> list) throws Exception {
 //
 //        logger.info("开始执行资源写入");
 //

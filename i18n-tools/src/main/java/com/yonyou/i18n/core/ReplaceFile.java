@@ -610,49 +610,6 @@ public class ReplaceFile {
 
     }
 
-    /**
-     * 统一处理纯文本的情况：先将该部分的内容全量保存起来，然后统一处理
-     *
-     * @param str 全文本字符串
-     * @param map 用来保存特殊的纯文本的情况
-     * @return 全文本字符串
-     */
-    private String operateStrByPureTxt(String str, Map<String, ArrayList<String>> map) {
-
-        if (map.size() > 0) {
-
-            LinkedHashMap<String, ArrayList<String>> ext = getOrderByKey(map);
-
-            Iterator<Entry<String, ArrayList<String>>> extMap = ext.entrySet().iterator();
-
-            while (extMap.hasNext()) {
-                Entry<String, ArrayList<String>> e = extMap.next();
-
-                String k = e.getKey();
-                String v = e.getValue().get(1);
-
-                // 针对title情况做特殊处理
-                // 示例： <title>应用平台</title>
-                String reg4Title2 = "<title>" + e.getKey() + "</title>";
-                try {
-                    Matcher matcher = Pattern.compile(reg4Title2).matcher(str);
-
-                    if (matcher.find()) {
-                        v = e.getValue().get(0);
-                    }
-                } catch (Exception e1) {
-                    logger.info(e1);
-                }
-
-                // 多语字符替换
-                str = replaceAllString(str, k, v);
-            }
-        }
-
-        return str;
-
-    }
-
 
     /**
      * 针对全文进行中文的替换
@@ -712,6 +669,11 @@ public class ReplaceFile {
             // 主要的替换方法-end
 
         }
+
+        // 添加对纯文本的解析
+        // 20181108 update
+        // 目前主要针对自动代码生成的React中的label的情况进行处理
+        str = operateStrByPureTxt(str, map);
 
         return str;
     }
@@ -814,6 +776,56 @@ public class ReplaceFile {
         }
 
         return str;
+    }
+
+
+    /**
+     * 统一处理纯文本的情况：先将该部分的内容全量保存起来，然后统一处理
+     *
+     * TODO
+     * 20181108
+     *
+     * 该部分有一个想法：在对文本字符串还原到line reader， 然后针对纯文本的行号来进行替换处理
+     * 另外，纯文本的替换是否需要进行文本的长度排序后替换，不然会造成字符嵌套的情况。
+     *
+     * @param str 全文本字符串
+     * @param map 用来保存特殊的纯文本的情况
+     * @return 全文本字符串
+     */
+    private String operateStrByPureTxt(String str, Map<String, ArrayList<String>> map) {
+
+        if (map.size() > 0) {
+
+            LinkedHashMap<String, ArrayList<String>> ext = getOrderByKey(map);
+
+            Iterator<Entry<String, ArrayList<String>>> extMap = ext.entrySet().iterator();
+
+            while (extMap.hasNext()) {
+                Entry<String, ArrayList<String>> e = extMap.next();
+
+                String k = e.getKey();
+                String v = e.getValue().get(1);
+
+                // 针对title情况做特殊处理
+                // 示例： <title>应用平台</title>
+                String reg4Title2 = "<title>" + e.getKey() + "</title>";
+                try {
+                    Matcher matcher = Pattern.compile(reg4Title2).matcher(str);
+
+                    if (matcher.find()) {
+                        v = e.getValue().get(0);
+                    }
+                } catch (Exception e1) {
+                    logger.info(e1);
+                }
+
+                // 多语字符替换
+                str = replaceAllString(str, k, v);
+            }
+        }
+
+        return str;
+
     }
 
     /**

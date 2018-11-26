@@ -18,7 +18,7 @@ import static com.yonyou.iuap.baseservice.intg.support.ServiceFeature.REFERENCE;
 
 
 /**
- * Translate CRUD 核心服务,提供逻辑删除/乐观锁
+ * TranslateTraditional CRUD 核心服务,提供逻辑删除/乐观锁
  */
 @Service
 public class TranslateService extends GenericIntegrateService<Translate> {

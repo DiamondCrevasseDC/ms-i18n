@@ -56,8 +56,8 @@ public class JsonFileUtil {
         _this.initFileContent();
         _this.initFileProps();
         _this.files.clear();
-        _this.initCorpus();
-        _this.macherCorpus();
+//        _this.initCorpus();
+//        _this.macherCorpus();
 //    		_this.writeResourceFile();
 //    		_this.fileContent = null;
 //    		_this.fileDescs = null;
@@ -236,6 +236,9 @@ public class JsonFileUtil {
                     JsonObject object = new JsonObject(); //创建Json格式的数据
 
                     object = new JsonParser().parse(str).getAsJsonObject();
+                    // TODO
+                    // 考虑json 的格式是否正确，如果不正确，需要对调整后解析
+
 
                     Iterator<Map.Entry<String, JsonElement>> obj = object.entrySet().iterator();
                     while (obj.hasNext()) {
@@ -355,6 +358,15 @@ public class JsonFileUtil {
         return _this.prop.get(key).toString();
     }
 
+
+    /**
+     * 返回资源
+     *
+     * @return
+     */
+    public OrderedProperties getProps() {
+        return _this.prop;
+    }
 
     /**
      * 文件编码

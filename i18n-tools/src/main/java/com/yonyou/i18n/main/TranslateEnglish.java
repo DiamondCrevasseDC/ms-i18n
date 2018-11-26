@@ -55,17 +55,27 @@ public class TranslateEnglish {
 
         OrderedProperties op = new OrderedProperties();
 
-        // 设置属性值
-        // resourcefileutil
-        ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
-        resourceFileUtil.init(path, "zh_CN.properties");
+        try {
 
-        op.add(resourceFileUtil.getProps());
+            // 设置属性值
+            // resourcefileutil
+            ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
+            resourceFileUtil.init(path, "zh_CN.properties");
 
-        // jsonfileutil
-        JsonFileUtil jsonFileUtil = new JsonFileUtil();
-        jsonFileUtil.init(path, "zh_CN.json");
-        op.add(jsonFileUtil.getProps());
+            op.add(resourceFileUtil.getProps());
+
+            // jsonfileutil
+            JsonFileUtil jsonFileUtil = new JsonFileUtil();
+            jsonFileUtil.init(path, "zh_CN.json");
+            op.add(jsonFileUtil.getProps());
+
+        } catch (Exception e) {
+
+            logger.info(e);
+
+            throw e;
+
+        }
 
         return op;
 
@@ -98,7 +108,6 @@ public class TranslateEnglish {
 //        String zipFile = path + ".zip";
 
         try {
-
 
 
             TranslateEnglish sb = new TranslateEnglish();

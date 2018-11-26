@@ -215,11 +215,13 @@ public class I18nController extends GenericController<I18n> {
      */
     public Boolean saveTranslate(Properties properties) throws Exception {
 
-        logger.info("开始执行原始资源信息解析并存入数据库！");
+        logger.info("开始执行原始资源信息解析并存入数据库！保存条数为："+properties.size());
+
 
         List<Translate> listData = new ArrayList<Translate>();
         Translate translate;
 
+        int i = 0;
         for (String key : properties.stringPropertyNames()) {
 
             translate = new Translate();
@@ -228,11 +230,12 @@ public class I18nController extends GenericController<I18n> {
             translate.setChinese(Helper.unwindEscapeChars(properties.getProperty(key)));
 
             listData.add(translate);
+            i++;
         }
 
         this.translateService.saveBatch(listData);
 
-        logger.info("执行资源写入数据库完成！");
+        logger.info("执行资源写入数据库完成！保存条数为：" + i);
 
         return true;
 

@@ -164,12 +164,16 @@ public class I18nController extends GenericController<I18n> {
 
                 // 第一次执行时将文件导入数据库： 首先解析上传的文件中存在的zh_CN.properties\zh_CN.json的文件，将解析的对象保持为list，然后调用save接口保持数据库。
 
+                logger.info("开始进行资源解析：" + zipPath);
                 TranslateEnglish sb = new TranslateEnglish();
 
                 sb.init(zipPath, "English", "properties,json");
 
+                logger.info("资源解析初始化完毕！");
+
                 Properties properties = sb.getOrderedProperties(zipPath);
 
+                logger.info("资源解析完毕：" + properties);
                 // 通过判断是否存在资源数据库来确定是第一次还是第二次执行
                 Boolean haveInsert = false;
                 for (String key : properties.stringPropertyNames()) {
@@ -180,6 +184,8 @@ public class I18nController extends GenericController<I18n> {
                     break;
                 }
 
+
+                logger.info("开始执行资源数据库持久化操作！");
 
                 if (!haveInsert) {
                     saveTranslate(properties);

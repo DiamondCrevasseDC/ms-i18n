@@ -7,7 +7,10 @@ import com.yonyou.cloud.translate.entity.Translate;
 import com.yonyou.cloud.translate.service.TranslateService;
 import com.yonyou.i18n.constants.I18nConstants;
 import com.yonyou.i18n.main.TranslateEnglish;
+import com.yonyou.i18n.model.OrderedProperties;
 import com.yonyou.i18n.utils.Helper;
+import com.yonyou.i18n.utils.JsonFileUtil;
+import com.yonyou.i18n.utils.ResourceFileUtil;
 import com.yonyou.i18n.utils.ZipUtils;
 import com.yonyou.iuap.baseservice.controller.GenericController;
 import com.yonyou.iuap.mvc.annotation.FrontModelExchange;
@@ -171,12 +174,30 @@ public class I18nController extends GenericController<I18n> {
 
                 logger.info("资源解析初始化完毕！");
 
-                Properties properties = sb.getOrderedProperties(zipPath);
+//                Properties properties = sb.getOrderedProperties(zipPath);
 
-                logger.info("资源解析完毕：" + properties);
+
+                OrderedProperties op = new OrderedProperties();
+
+                logger.info("资源解析properties！");
+                // 设置属性值
+                // resourcefileutil
+                ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
+                resourceFileUtil.init(zipPath, "zh_CN.properties");
+
+                op.add(resourceFileUtil.getProps());
+
+                logger.info("资源解析json！");
+                // jsonfileutil
+                JsonFileUtil jsonFileUtil = new JsonFileUtil();
+                jsonFileUtil.init(zipPath, "zh_CN.json");
+                op.add(jsonFileUtil.getProps());
+
+
+                logger.info("资源解析完毕：" + op);
                 // 通过判断是否存在资源数据库来确定是第一次还是第二次执行
                 Boolean haveInsert = false;
-                for (String key : properties.stringPropertyNames()) {
+                for (String key : op.stringPropertyNames()) {
 
                     if (this.translateService.findByCode(key) != null) {
                         haveInsert = true;
@@ -188,7 +209,7 @@ public class I18nController extends GenericController<I18n> {
                 logger.info("开始执行资源数据库持久化操作！");
 
                 if (!haveInsert) {
-                    saveTranslate(properties);
+                    saveTranslate(op);
 
                     return super.buildSuccess();
 
@@ -220,7 +241,8 @@ public class I18nController extends GenericController<I18n> {
             this.i18nService.save(i18n);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.info("资源解析error：" + e);
+//            e.printStackTrace();
         }
 
         long e = System.currentTimeMillis();
@@ -238,7 +260,7 @@ public class I18nController extends GenericController<I18n> {
      */
     public Boolean saveTranslate(Properties properties) throws Exception {
 
-        logger.info("开始执行原始资源信息解析并存入数据库！保存条数为："+properties.size());
+        logger.info("开始执行原始资源信息解析并存入数据库！保存条数为：" + properties.size());
 
 
         List<Translate> listData = new ArrayList<Translate>();

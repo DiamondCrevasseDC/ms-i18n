@@ -196,24 +196,30 @@ public class I18nController extends GenericController<I18n> {
 
                 logger.info("资源解析完毕：" + op);
                 // 通过判断是否存在资源数据库来确定是第一次还是第二次执行
-                Boolean haveInsert = false;
-                for (String key : op.stringPropertyNames()) {
 
-                    try {
-                        if (this.translateService.findByCode(key) != null) {
-                            haveInsert = true;
-                        }
-                    } catch (RuntimeException e) {
-                        break;
-                    }
-                    break;
-                }
+//                Boolean haveInsert = false;
+//                for (String key : op.stringPropertyNames()) {
+//
+//                    try {
+//                        if (this.translateService.findByCode(key) != null) {
+//                            haveInsert = true;
+//                        }
+//                    } catch (RuntimeException e) {
+//                        break;
+//                    }
+//                    break;
+//                }
 
 
                 logger.info("开始执行资源数据库持久化操作！");
 
-                if (!haveInsert) {
+                if(!"admin".equalsIgnoreCase(i18n.getLastModifyUser())){
+//                if (!haveInsert) {
                     saveTranslate(op);
+
+                    i18n.setLastModifyUser("admin");
+
+                    this.i18nService.save(i18n);
 
                     return super.buildSuccess();
 

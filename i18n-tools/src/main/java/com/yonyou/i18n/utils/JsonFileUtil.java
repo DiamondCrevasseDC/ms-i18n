@@ -73,7 +73,7 @@ public class JsonFileUtil {
             Map.Entry<String, JsonElement> j = obj.next();
 
             if (null != j.getKey() && !"".equals(j.getKey())) {
-                prop.put(j.getKey(), j.getValue());
+                prop.put(j.getKey(), j.getValue().getAsString());
             }
         }
 

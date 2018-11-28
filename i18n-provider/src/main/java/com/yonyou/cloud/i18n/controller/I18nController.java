@@ -203,7 +203,7 @@ public class I18nController extends GenericController<I18n> {
                         if (this.translateService.findByCode(key) != null) {
                             haveInsert = true;
                         }
-                    } catch (RuntimeException e){
+                    } catch (RuntimeException e) {
                         break;
                     }
                     break;
@@ -266,11 +266,11 @@ public class I18nController extends GenericController<I18n> {
 
         logger.info("开始执行原始资源信息解析并存入数据库！保存条数为：" + properties.size());
 
-
-        List<Translate> listData = new ArrayList<Translate>();
+        List<String> errorList = new ArrayList<String>();
         Translate translate;
 
         int i = 0;
+        int j = 0;
         for (String key : properties.stringPropertyNames()) {
 
             translate = new Translate();
@@ -278,13 +278,16 @@ public class I18nController extends GenericController<I18n> {
 
             translate.setChinese(Helper.unwindEscapeChars(properties.getProperty(key)));
 
-            listData.add(translate);
-            i++;
+            try {
+                this.translateService.save(translate);
+                i++;
+            } catch (Exception e) {
+                errorList.add(key);
+                j++;
+            }
         }
 
-        this.translateService.saveBatch(listData);
-
-        logger.info("执行资源写入数据库完成！保存条数为：" + i);
+        logger.info("***执行资源写入数据库完成！总条数为：" + (i + j) + "***保存条数为：" + i + "***异常条数为：" + j + "***异常数据的key为：" + errorList);
 
         return true;
 

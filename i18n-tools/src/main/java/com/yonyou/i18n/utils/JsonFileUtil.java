@@ -244,11 +244,11 @@ public class JsonFileUtil {
                     while (obj.hasNext()) {
                         Map.Entry<String, JsonElement> j = obj.next();
 
-                        if (null != j.getValue() && !"".equals(delSpecialChar(j.getValue().toString()))) {
+                        if (null != j.getValue() && !"".equals(delSpecialChar(j.getValue().getAsString()))) {
                             if (prop.containsKey(j.getKey()) && !prop.get(j.getKey()).equals(delSpecialChar(j.getValue().toString()))) {
                                 System.out.println(j.getKey());
                             } else {
-                                prop.setProperty(j.getKey(), delSpecialChar(j.getValue().toString()));
+                                prop.setProperty(j.getKey(), delSpecialChar(j.getValue().getAsString()));
                             }
                         }
                     }

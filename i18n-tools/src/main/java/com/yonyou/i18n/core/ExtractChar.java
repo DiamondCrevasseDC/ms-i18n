@@ -101,6 +101,8 @@ public class ExtractChar {
             // 针对每个独立的文件，进行中文的解析
             if (pageNode.isFile()) {
 
+                logger.info("--扫描文件个数："+pageNodes.size() + "--当前文件名称：" +pageNode.getName());
+
                 writeMap2Node(pageNode);
 
                 doDataWash(pageNode);

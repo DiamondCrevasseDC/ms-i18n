@@ -199,8 +199,12 @@ public class I18nController extends GenericController<I18n> {
                 Boolean haveInsert = false;
                 for (String key : op.stringPropertyNames()) {
 
-                    if (this.translateService.findByCode(key) != null) {
-                        haveInsert = true;
+                    try {
+                        if (this.translateService.findByCode(key) != null) {
+                            haveInsert = true;
+                        }
+                    } catch (RuntimeException e){
+                        break;
                     }
                     break;
                 }

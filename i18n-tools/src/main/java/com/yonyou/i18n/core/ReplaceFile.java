@@ -261,7 +261,7 @@ public class ReplaceFile {
 
             str = getStreamByReader(reader);
 
-            str = updateFileString(str, pageNode.getSubstitutions());
+            str = updateReactFileString(str, pageNode.getSubstitutions());
 
             str = updateFileImport(str, pageNode.getAddContent());
 
@@ -271,7 +271,7 @@ public class ReplaceFile {
 
             str = getStreamByReader(reader);
 
-            str = updateFileString(str, pageNode.getSubstitutions());
+            str = updateReactFileString(str, pageNode.getSubstitutions());
 
             str = updateFileImport(str, pageNode.getAddContent());
 
@@ -467,6 +467,27 @@ public class ReplaceFile {
         String value = rs.getValue();
         String replaceValue = rs.getReplaceStr();
 
+        // TODO 该部分可以追加其他特殊情况
+        // TODO 添加处理包含 [] {} 的情况
+
+        return replaceValue;
+
+    }
+
+    /**
+     * 处理被"" '' 包括起来的内容: 主要是基于JS文件的
+     * <p>
+     * 正常情况下可以直接替换，但是需要处理比较多的特殊情况
+     *
+     * @param str 原始字符串
+     * @param rs  字符替换的多语内容
+     * @return 将要替换的字符串
+     */
+    private String getReplaceValueByReactQuotation(String str, MLResSubstitution rs) {
+
+        String value = rs.getValue();
+        String replaceValue = rs.getReplaceStr();
+
         // React中的特殊情况
         // 属性值，采用{this.props.intl.formatMessage({id:"js.buy.com2.0047", defaultMessage:"s ~ e"})}值替换
         // replaceJSAPIString
@@ -651,6 +672,74 @@ public class ReplaceFile {
             } else if (value.startsWith("\"") || value.startsWith("\'")) {
 
                 replaceValue = getReplaceValueByQuotation(str, rs);
+
+            } else if (value.startsWith("$") && value.endsWith("$")) {
+
+                // 添加对纯文本的解析
+                setReplaceValueByPureTxt(rs, map);
+            }
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////多语字符串的识别处理----结束////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+
+            // 主要的替换方法-start：
+            // 进行特定字符的全量替换
+            // 由于字符前后都带有界定符号，因此对单个文件基本可以确定唯一性
+            str = replaceAllString(str, value, replaceValue);
+            // 主要的替换方法-end
+
+        }
+
+        // 添加对纯文本的解析
+        // 20181108 update
+        // 目前主要针对自动代码生成的React中的label的情况进行处理
+        str = operateStrByPureTxt(str, map);
+
+        return str;
+    }
+
+
+    /**
+     * 针对全文进行中文的替换
+     * 不用像以前那样读取行，判断行号了，直接采用String流整体替换后输出
+     * <p>
+     * 需要依据原始扫描信息而来，因为原始信息做过内容的去重等过滤操作
+     *
+     * @param str 全文本字符流
+     * @param rss 资源信息
+     * @return 替换后的字符串
+     */
+    private String updateReactFileString(String str, ArrayList<MLResSubstitution> rss) {
+
+        // MLResSubstitution里的内容包含界定符号
+        // 整体替换时基于“”、’‘ 的界定可以直接替换，基于{}、<>的界定需要在替换的对象中添加界定符号以保证替换后的完整性。
+        // 另外针对html中“”、’‘ 的处理需要更多的判断
+        String value;
+        String replaceValue;
+
+        Map<String, ArrayList<String>> map = new HashMap<>();// 用来保存特殊的纯文本的情况
+
+        for (MLResSubstitution rs : rss) {
+
+            // 某些情况下全量替换会报错
+            value = rs.getValue();
+            replaceValue = rs.getReplaceStr();
+
+            ////////////////////////////////////////////////////////////////////////////////////////
+            ///////////////////////////////多语字符串的识别处理----开始////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////
+            if (value.startsWith("{")) {
+
+                replaceValue = getReplaceValueByBrace(str, rs);
+
+            } else if (value.startsWith(">")) {
+
+                replaceValue = getReplaceValueByLTGT(str, rs);
+
+            } else if (value.startsWith("\"") || value.startsWith("\'")) {
+
+                replaceValue = getReplaceValueByReactQuotation(str, rs);
 
             } else if (value.startsWith("$") && value.endsWith("$")) {
 

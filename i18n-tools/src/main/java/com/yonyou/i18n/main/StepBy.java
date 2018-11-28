@@ -214,7 +214,7 @@ public class StepBy {
         String sourcePath = "/Users/yanyong/temp/iuap-pap-baseservice-develop/java.zip";
         String path = "/Users/yanyong/temp/iuap-pap-baseservice-develop";// + "_" + System.currentTimeMillis();
 
-        path = "/Users/yanyong/Downloads/pages-2";
+        path = "/Users/yanyong/Downloads/print";
         String zipFile = path + ".zip";
 
         try {

@@ -1,9 +1,6 @@
 package com.yonyou.i18n.utils;
 
-import com.yonyou.i18n.model.MLResSubstitution;
 import com.yonyou.i18n.model.OrderedProperties;
-import com.yonyou.i18n.model.PageNode;
-import org.apache.commons.logging.LogFactory;
 
 import java.io.*;
 import java.util.*;
@@ -18,7 +15,7 @@ import java.util.regex.Matcher;
  */
 public class CorpusFileUtil {
 
-    private static CorpusFileUtil _this = new CorpusFileUtil();
+//    private static CorpusFileUtil _this = new CorpusFileUtil();
 
     private String legalityReamName = "iuap_zh_CN.properties";
     private String corpusReamName = "corpus-en.properties";
@@ -48,25 +45,25 @@ public class CorpusFileUtil {
      * @param path
      * @return void
      */
-    public static void init(String path, String legalityReamName) {
+    public void init(String path, String legalityReamName) {
 
-        _this.path = path;
+        this.path = path;
         if (legalityReamName != null && !"".equals(legalityReamName))
-            _this.legalityReamName = legalityReamName;
+            this.legalityReamName = legalityReamName;
 
-        _this.initCorpus();
+        this.initCorpus();
 
-        _this.loadFiles();
+        this.loadFiles();
 
-        _this.updateFileContent();
+        this.updateFileContent();
 
-//		_this.initFileProps();
-//		_this.files.clear();
-//		_this.initCorpus();
-//		_this.macherCorpus();
-//    		_this.writeResourceFile();
-//    		_this.fileContent = null;
-//    		_this.fileDescs = null;
+//		this.initFileProps();
+//		this.files.clear();
+//		this.initCorpus();
+//		this.macherCorpus();
+//    		this.writeResourceFile();
+//    		this.fileContent = null;
+//    		this.fileDescs = null;
     }
 
     /**
@@ -75,7 +72,7 @@ public class CorpusFileUtil {
      * @return void
      */
     private void loadFiles() {
-        _this.getAllFileByFile(new File(_this.path + File.separator + "locales"));
+        this.getAllFileByFile(new File(this.path + File.separator + "locales"));
     }
 
     /**
@@ -88,15 +85,15 @@ public class CorpusFileUtil {
     private void getAllFileByFile(File file) {
         if (null != file) {
             if (file.isFile()) {
-                if (_this.validateFileName(file)) {
-                    _this.files.add(file);
+                if (this.validateFileName(file)) {
+                    this.files.add(file);
                 }
             }
             if (file.isDirectory()) {
                 File[] fils = file.listFiles();
                 if (null != fils) {
                     for (File tempFile : fils) {
-                        _this.getAllFileByFile(tempFile);
+                        this.getAllFileByFile(tempFile);
                     }
                 }
             }
@@ -111,7 +108,7 @@ public class CorpusFileUtil {
      * @throws Exception
      */
     private boolean validateFileName(File file) {
-        if (file.getName().contains(_this.legalityReamName)) {
+        if (file.getName().contains(this.legalityReamName)) {
             return true;
         }
         return false;
@@ -124,7 +121,7 @@ public class CorpusFileUtil {
      */
     private void initCorpus() {
         try {
-            _this.corpus.load(new InputStreamReader(new FileInputStream(new File(_this.path + File.separator + corpusReamName)), "UTF-8"));
+            this.corpus.load(new InputStreamReader(new FileInputStream(new File(this.path + File.separator + corpusReamName)), "UTF-8"));
         } catch (Exception e) {
             // do nothing
         }
@@ -160,7 +157,7 @@ public class CorpusFileUtil {
 //				String value = p.getValue().toString();
 //                String key = p.getValue().toString();
 
-                String value = _this.corpus.getProperty(key);
+                String value = this.corpus.getProperty(key);
                 if (value != null && !"".equals(value)) {
                     p.setValue(value);
                 }
@@ -204,7 +201,7 @@ public class CorpusFileUtil {
      * @return void
      */
     private void updateFileContent() {
-        for (File file : _this.files) {
+        for (File file : this.files) {
             if (null != file && file.exists()) {
                 writePropertiesFile(file);
             }
@@ -215,9 +212,9 @@ public class CorpusFileUtil {
      * 匹配语料库
      */
     private void macherCorpus() {
-        for (String key : _this.prop.stringPropertyNames()) {
-            if (_this.corpus.containsKey(_this.prop.getProperty(key))) {
-                prop.setProperty(key, _this.corpus.getProperty(_this.prop.getProperty(key)));
+        for (String key : this.prop.stringPropertyNames()) {
+            if (this.corpus.containsKey(this.prop.getProperty(key))) {
+                prop.setProperty(key, this.corpus.getProperty(this.prop.getProperty(key)));
             } else {
 //				prop.setProperty(key, "");
             }
@@ -230,16 +227,16 @@ public class CorpusFileUtil {
      *
      * @return
      */
-    public static HashSet<String> getKeyPrefix() {
+    public HashSet<String> getKeyPrefix() {
 
         HashSet<String> keyPrefixs = new HashSet<String>();
 
 
-        for (String str : _this.fileContent.toString().split("\n")) {
+        for (String str : this.fileContent.toString().split("\n")) {
             if (null != str && !"".equals(str.trim())) {
-                if (_this.isDescRow(str)) {
+                if (this.isDescRow(str)) {
                     continue;
-                } else if (_this.isValueRow(str)) {
+                } else if (this.isValueRow(str)) {
                     String[] value = str.split("=");
 
                     if (value.length == 2 && null != value[0] && !"".equals(value[0])) {
@@ -259,11 +256,11 @@ public class CorpusFileUtil {
      */
     private void initFileProps() {
 
-        for (String str : delSpecialChar(_this.fileContent.toString()).split("\n")) {
+        for (String str : delSpecialChar(this.fileContent.toString()).split("\n")) {
             if (null != str && !"".equals(str.trim())) {
-                if (_this.isDescRow(str)) {
+                if (this.isDescRow(str)) {
                     continue;
-                } else if (_this.isValueRow(str)) {
+                } else if (this.isValueRow(str)) {
                     String[] value = str.split("=");
                     if (value.length == 2 && null != value[1] && !"".equals(value[1])) {
                         if (prop.containsKey(value[0]) && !prop.get(value[0]).equals(value[1])) {
@@ -321,9 +318,9 @@ public class CorpusFileUtil {
      * 将抽取出来的资源写入资源文件中
      * 做英文资源文件
      */
-    public static void writeResourceFile() {
+    public void writeResourceFile() {
 
-        File file = new File(_this.path + File.separator + "iuap_all.properties");
+        File file = new File(this.path + File.separator + "iuap_all.properties");
 
         // 为了保证资源的顺序，采用LinkedHashSet存储
 //		OrderedProperties prop = new OrderedProperties();
@@ -334,14 +331,14 @@ public class CorpusFileUtil {
             output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 
             // 设置属性值
-//			Iterator<Entry<String, String>> descs = _this.fileDescs.entrySet().iterator();
+//			Iterator<Entry<String, String>> descs = this.fileDescs.entrySet().iterator();
 //			while(descs.hasNext()){
 //				Entry<String, String> desc = descs.next();
 //				prop.setProperty(desc.getKey(), desc.getValue());
 //			}
 
             // 保存属性值
-            _this.prop.store(output, "create the resource file");
+            this.prop.store(output, "create the resource file");
 
         } catch (IOException io) {
             io.printStackTrace();
@@ -360,9 +357,9 @@ public class CorpusFileUtil {
 
 //	    init("D:\\workspace\\iuap_apportal\\iweb_apportal\\workbench\\wbalone\\target\\workbench\\locales");
 
-        init("/Users/yanyong/Desktop/controller/", "");
+//        init("/Users/yanyong/Desktop/controller/", "");
 
-//	    System.out.println(_this.fileDescs);
+//	    System.out.println(this.fileDescs);
 
     }
 
@@ -373,79 +370,9 @@ public class CorpusFileUtil {
      * @param key
      * @return
      */
-    public static String getProps(String key) {
-        return _this.prop.get(key).toString();
+    public String getProps(String key) {
+        return this.prop.get(key).toString();
     }
 
-
-    /**
-     * 文件编码
-     *
-     * @param theString
-     * @return String
-     */
-    private String decodeUnicode(String theString) {
-        char aChar;
-        int len = theString.length();
-        StringBuffer outBuffer = new StringBuffer(len);
-        for (int x = 0; x < len; ) {
-            aChar = theString.charAt(x++);
-            if (aChar == '\\') {
-                aChar = theString.charAt(x++);
-                if (aChar == 'u') {
-                    int value = 0;
-                    for (int i = 0; i < 4; i++) {
-                        aChar = theString.charAt(x++);
-                        switch (aChar) {
-                            case '0':
-                            case '1':
-                            case '2':
-                            case '3':
-                            case '4':
-                            case '5':
-                            case '6':
-                            case '7':
-                            case '8':
-                            case '9':
-                                value = (value << 4) + aChar - '0';
-                                break;
-                            case 'a':
-                            case 'b':
-                            case 'c':
-                            case 'd':
-                            case 'e':
-                            case 'f':
-                                value = (value << 4) + 10 + aChar - 'a';
-                                break;
-                            case 'A':
-                            case 'B':
-                            case 'C':
-                            case 'D':
-                            case 'E':
-                            case 'F':
-                                value = (value << 4) + 10 + aChar - 'A';
-                                break;
-                            default:
-                                throw new IllegalArgumentException(
-                                        "Malformed   \\uxxxx   encoding.");
-                        }
-                    }
-                    outBuffer.append((char) value);
-                } else {
-                    if (aChar == 't')
-                        aChar = '\t';
-                    else if (aChar == 'r')
-                        aChar = '\r';
-                    else if (aChar == 'n')
-                        aChar = '\n';
-                    else if (aChar == 'f')
-                        aChar = '\f';
-                    outBuffer.append(aChar);
-                }
-            } else
-                outBuffer.append(aChar);
-        }
-        return outBuffer.toString();
-    }
 
 }

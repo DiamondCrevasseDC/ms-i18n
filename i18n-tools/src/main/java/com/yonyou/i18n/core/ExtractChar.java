@@ -63,19 +63,19 @@ public class ExtractChar {
 
             this.replaceJSString = this.replaceReactJSString;
 
-            JsonFileUtil jsonFileUtil = new JsonFileUtil();
-
-            jsonFileUtil.init(this.parseProjectPath + File.separator + "locales", ".json");
-            keyPrefixs = jsonFileUtil.getKeyPrefix();
+//            JsonFileUtil jsonFileUtil = new JsonFileUtil();
+//
+//            jsonFileUtil.init(this.parseProjectPath + File.separator + "locales", ".json");
+//            keyPrefixs = jsonFileUtil.getKeyPrefix();
 
         } else {
 
             this.replaceJSString = this.replaceJQueryJSString;
 
-            ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
-
-            resourceFileUtil.init(this.parseProjectPath + File.separator + "locales", ".properties");
-            keyPrefixs = resourceFileUtil.getKeyPrefix();
+//            ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
+//
+//            resourceFileUtil.init(this.parseProjectPath + File.separator + "locales", ".properties");
+//            keyPrefixs = resourceFileUtil.getKeyPrefix();
         }
 
 

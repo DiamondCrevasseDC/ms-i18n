@@ -62,12 +62,12 @@ public class TranslateEnglish {
             ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
             resourceFileUtil.init(path, "zh_CN.properties");
 
-            op.add(resourceFileUtil.getProps());
+            op.add(resourceFileUtil.getPropsFromFiles());
 
             // jsonfileutil
             JsonFileUtil jsonFileUtil = new JsonFileUtil();
             jsonFileUtil.init(path, "zh_CN.json");
-            op.add(jsonFileUtil.getProps());
+            op.add(jsonFileUtil.getPropsFromFiles());
 
         } catch (Exception e) {
 

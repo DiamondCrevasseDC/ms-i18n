@@ -185,13 +185,13 @@ public class I18nController extends GenericController<I18n> {
                 ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
                 resourceFileUtil.init(zipPath, "zh_CN.properties");
 
-                op.add(resourceFileUtil.getProps());
+                op.add(resourceFileUtil.getPropsFromFiles());
 
                 logger.info("资源解析json！");
                 // jsonfileutil
                 JsonFileUtil jsonFileUtil = new JsonFileUtil();
                 jsonFileUtil.init(zipPath, "zh_CN.json");
-                op.add(jsonFileUtil.getProps());
+                op.add(jsonFileUtil.getPropsFromFiles());
 
 
                 logger.info("资源解析完毕：" + op);

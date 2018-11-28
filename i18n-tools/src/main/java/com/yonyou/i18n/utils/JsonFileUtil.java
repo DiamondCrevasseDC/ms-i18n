@@ -19,9 +19,9 @@ import java.util.regex.Matcher;
  */
 public class JsonFileUtil {
 
-    private static JsonFileUtil _this = new JsonFileUtil();
+//    private JsonFileUtil _this = new JsonFileUtil();
 
-    static String resourceFileEncoding = ConfigUtils.getPropertyValue("resourceFileEncoding");
+    private String resourceFileEncoding = ConfigUtils.getPropertyValue("resourceFileEncoding");
 
     //	private String legalityReamName = "iuap_zh_CN.properties";
     private String legalityReamName = ".json";
@@ -42,25 +42,81 @@ public class JsonFileUtil {
 
     }
 
+
+    public JsonObject getJsonFromFile(File file){
+
+        // 为了保证资源的顺序，采用LinkedHashSet存储
+        JsonObject object = new JsonObject(); //创建Json格式的数据
+
+        try {
+            if (file.exists()) {
+                object = new JsonParser().parse(new InputStreamReader(new FileInputStream(file), resourceFileEncoding)).getAsJsonObject();
+            }
+        } catch (Exception e){
+
+        }
+
+        return object;
+
+    }
+
+    public OrderedProperties getPropsFromFile(File file){
+
+        // 为了保证资源的顺序，采用LinkedHashSet存储
+        OrderedProperties prop = new OrderedProperties();
+
+        JsonObject object = getJsonFromFile(file);
+
+        Iterator<Map.Entry<String, JsonElement>> obj = object.entrySet().iterator();
+
+        while (obj.hasNext()) {
+            Map.Entry<String, JsonElement> j = obj.next();
+
+            if (null != j.getKey() && !"".equals(j.getKey())) {
+                prop.put(j.getKey(), j.getValue());
+            }
+        }
+
+        return prop;
+
+    }
+
+    public OrderedProperties getPropsFromFiles(){
+
+        // 为了保证资源的顺序，采用LinkedHashSet存储
+        OrderedProperties prop = new OrderedProperties();
+
+        for (File file : this.files) {
+            if (null != file && file.exists()) {
+
+                prop.add(this.getPropsFromFile(file));
+            }
+        }
+
+        return prop;
+
+    }
+
+
     /**
-     * 属性文件初始化
+     * 属性文件初始化：主要是依据路径加载所有的符合类型的文件
      *
      * @param path
      * @return void
      */
-    public static void init(String path, String legalityReamName) {
-        _this.path = path;
+    public void init(String path, String legalityReamName) {
+        this.path = path;
         if (legalityReamName != null && !"".equals(legalityReamName))
-            _this.legalityReamName = legalityReamName;
-        _this.loadFiles();
-        _this.initFileContent();
-        _this.initFileProps();
-        _this.files.clear();
-//        _this.initCorpus();
-//        _this.macherCorpus();
-//    		_this.writeResourceFile();
-//    		_this.fileContent = null;
-//    		_this.fileDescs = null;
+            this.legalityReamName = legalityReamName;
+        this.loadFiles();
+//        this.initFileContent();
+//        this.initFileProps();
+//        this.files.clear();
+//        this.initCorpus();
+//        this.macherCorpus();
+//    		this.writeResourceFile();
+//    		this.fileContent = null;
+//    		this.fileDescs = null;
     }
 
     /**
@@ -69,7 +125,7 @@ public class JsonFileUtil {
      * @return void
      */
     private void loadFiles() {
-        _this.getAllFileByFile(new File(_this.path));
+        this.getAllFileByFile(new File(this.path));
     }
 
     /**
@@ -82,15 +138,15 @@ public class JsonFileUtil {
     private void getAllFileByFile(File file) {
         if (null != file) {
             if (file.isFile()) {
-                if (_this.validateFileName(file)) {
-                    _this.files.add(file);
+                if (this.validateFileName(file)) {
+                    this.files.add(file);
                 }
             }
             if (file.isDirectory()) {
                 File[] fils = file.listFiles();
                 if (null != fils) {
                     for (File tempFile : fils) {
-                        _this.getAllFileByFile(tempFile);
+                        this.getAllFileByFile(tempFile);
                     }
                 }
             }
@@ -105,7 +161,7 @@ public class JsonFileUtil {
      * @throws Exception
      */
     private boolean validateFileName(File file) {
-        if (file.getName().contains(_this.legalityReamName)) {
+        if (file.getName().contains(this.legalityReamName)) {
             return true;
         }
         return false;
@@ -118,7 +174,7 @@ public class JsonFileUtil {
      */
     private void initCorpus() {
         try {
-            _this.corpus.load(new InputStreamReader(new FileInputStream(new File(_this.path + File.separator + "corpus-en.properties")), "UTF-8"));
+            this.corpus.load(new InputStreamReader(new FileInputStream(new File(this.path + File.separator + "corpus-en.properties")), "UTF-8"));
         } catch (Exception e) {
             // do nothing
         }
@@ -130,7 +186,7 @@ public class JsonFileUtil {
      * @return void
      */
     private void initFileContent() {
-        for (File file : _this.files) {
+        for (File file : this.files) {
             if (null != file && file.exists()) {
                 FileReader fileReader = null;
                 BufferedReader bufferedReader = null;
@@ -141,11 +197,11 @@ public class JsonFileUtil {
                     String temp = bufferedReader.readLine();
                     while (null != temp) {
                         sb.append(temp);
-//		            	_this.fileContent.append(temp).append("\n");
+//		            	this.fileContent.append(temp).append("\n");
                         temp = bufferedReader.readLine();
                     }
 
-                    _this.fileContent.append(sb.toString()).append("\n");
+                    this.fileContent.append(sb.toString()).append("\n");
 
                 } catch (Exception e) {
                     LogFactory.getLog(JsonFileUtil.class).error(e);
@@ -173,9 +229,9 @@ public class JsonFileUtil {
      * 匹配语料库
      */
     private void macherCorpus() {
-        for (String key : _this.prop.stringPropertyNames()) {
-            if (_this.corpus.containsKey(_this.prop.getProperty(key))) {
-                prop.setProperty(key, _this.corpus.getProperty(_this.prop.getProperty(key)));
+        for (String key : this.prop.stringPropertyNames()) {
+            if (this.corpus.containsKey(this.prop.getProperty(key))) {
+                prop.setProperty(key, this.corpus.getProperty(this.prop.getProperty(key)));
             } else {
 //				prop.setProperty(key, "");
             }
@@ -188,16 +244,16 @@ public class JsonFileUtil {
      *
      * @return
      */
-    public static HashSet<String> getKeyPrefix() {
+    public HashSet<String> getKeyPrefix() {
 
         HashSet<String> keyPrefixs = new HashSet<String>();
 
 
-        for (String str : _this.fileContent.toString().split("\n")) {
+        for (String str : this.fileContent.toString().split("\n")) {
             if (null != str && !"".equals(str.trim())) {
-                if (_this.isDescRow(str)) {
+                if (this.isDescRow(str)) {
                     continue;
-                } else if (_this.isValueRow(str)) {
+                } else if (this.isValueRow(str)) {
 
                     JsonObject object = new JsonObject(); //创建Json格式的数据
 
@@ -226,18 +282,24 @@ public class JsonFileUtil {
      */
     private void initFileProps() {
 
-        for (String str : _this.fileContent.toString().split("\n")) {
+        for (String str : this.fileContent.toString().split("\n")) {
             if (null != str && !"".equals(str.trim())) {
-                if (_this.isDescRow(str)) {
+                if (this.isDescRow(str)) {
                     continue;
-                } else if (_this.isValueRow(str)) {
+                } else if (this.isValueRow(str)) {
 
 
                     JsonObject object = new JsonObject(); //创建Json格式的数据
 
-                    object = new JsonParser().parse(str).getAsJsonObject();
                     // TODO
                     // 考虑json 的格式是否正确，如果不正确，需要对调整后解析
+                    // 先判断是否存在{}， 如果存在则看前后是否存在其他字符: 如果存在则删除，如果不存在则解析。
+                    //                  如果不存在则在前后添加{}
+                    if (str.contains("{") && str.contains("}")) {
+
+                    }
+
+                    object = new JsonParser().parse(str).getAsJsonObject();
 
 
                     Iterator<Map.Entry<String, JsonElement>> obj = object.entrySet().iterator();
@@ -302,9 +364,9 @@ public class JsonFileUtil {
      * 将抽取出来的资源写入资源文件中
      * 做英文资源文件
      */
-    public static void writeResourceFile() {
+    public void writeResourceFile() {
 
-        File file = new File(_this.path + File.separator + "iuap_all.properties");
+        File file = new File(this.path + File.separator + "iuap_all.properties");
 
         // 为了保证资源的顺序，采用LinkedHashSet存储
 //		OrderedProperties prop = new OrderedProperties();
@@ -315,14 +377,14 @@ public class JsonFileUtil {
             output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), "UTF-8"));
 
             // 设置属性值
-//			Iterator<Entry<String, String>> descs = _this.fileDescs.entrySet().iterator();
+//			Iterator<Entry<String, String>> descs = this.fileDescs.entrySet().iterator();
 //			while(descs.hasNext()){
 //				Entry<String, String> desc = descs.next();
 //				prop.setProperty(desc.getKey(), desc.getValue());
 //			}
 
             // 保存属性值
-            _this.prop.store(output, "create the resource file");
+            this.prop.store(output, "create the resource file");
 
         } catch (IOException io) {
             io.printStackTrace();
@@ -341,9 +403,9 @@ public class JsonFileUtil {
 
 //	    init("D:\\workspace\\iuap_apportal\\iweb_apportal\\workbench\\wbalone\\target\\workbench\\locales");
 
-        init("/Users/yanyong/workspace/java/yonyou/iweb_apportal/workbench/wbalone/target/workbench/locales", "");
+//        init("/Users/yanyong/workspace/java/yonyou/iweb_apportal/workbench/wbalone/target/workbench/locales", "");
 
-//	    System.out.println(_this.fileDescs);
+//	    System.out.println(this.fileDescs);
 
     }
 
@@ -354,8 +416,8 @@ public class JsonFileUtil {
      * @param key
      * @return
      */
-    public static String getProps(String key) {
-        return _this.prop.get(key).toString();
+    public String getProps(String key) {
+        return this.prop.get(key).toString();
     }
 
 
@@ -365,77 +427,8 @@ public class JsonFileUtil {
      * @return
      */
     public OrderedProperties getProps() {
-        return _this.prop;
+        return this.prop;
     }
 
-    /**
-     * 文件编码
-     *
-     * @param theString
-     * @return String
-     */
-    private String decodeUnicode(String theString) {
-        char aChar;
-        int len = theString.length();
-        StringBuffer outBuffer = new StringBuffer(len);
-        for (int x = 0; x < len; ) {
-            aChar = theString.charAt(x++);
-            if (aChar == '\\') {
-                aChar = theString.charAt(x++);
-                if (aChar == 'u') {
-                    int value = 0;
-                    for (int i = 0; i < 4; i++) {
-                        aChar = theString.charAt(x++);
-                        switch (aChar) {
-                            case '0':
-                            case '1':
-                            case '2':
-                            case '3':
-                            case '4':
-                            case '5':
-                            case '6':
-                            case '7':
-                            case '8':
-                            case '9':
-                                value = (value << 4) + aChar - '0';
-                                break;
-                            case 'a':
-                            case 'b':
-                            case 'c':
-                            case 'd':
-                            case 'e':
-                            case 'f':
-                                value = (value << 4) + 10 + aChar - 'a';
-                                break;
-                            case 'A':
-                            case 'B':
-                            case 'C':
-                            case 'D':
-                            case 'E':
-                            case 'F':
-                                value = (value << 4) + 10 + aChar - 'A';
-                                break;
-                            default:
-                                throw new IllegalArgumentException(
-                                        "Malformed   \\uxxxx   encoding.");
-                        }
-                    }
-                    outBuffer.append((char) value);
-                } else {
-                    if (aChar == 't')
-                        aChar = '\t';
-                    else if (aChar == 'r')
-                        aChar = '\r';
-                    else if (aChar == 'n')
-                        aChar = '\n';
-                    else if (aChar == 'f')
-                        aChar = '\f';
-                    outBuffer.append(aChar);
-                }
-            } else
-                outBuffer.append(aChar);
-        }
-        return outBuffer.toString();
-    }
 
 }

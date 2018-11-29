@@ -73,6 +73,22 @@ public class I18n extends AbsDrModel implements Serializable, Attachmentable {
         return this.projectType;
     }
 
+
+    @Condition(match = Match.EQ)
+    @Column(name = "PROJECT_STATUS")
+    private String projectStatus;        //项目类型
+
+    public void setProjectStatus(String projectStatus) {
+        this.projectStatus = projectStatus;
+    }
+
+    public String getProjectStatus() {
+        return this.projectStatus;
+    }
+
+
+
+
     @Transient
     private String projectTypeEnumValue;   //项目类型
 

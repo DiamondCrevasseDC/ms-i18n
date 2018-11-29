@@ -12,10 +12,10 @@ import java.util.regex.Matcher;
 /**
  * 抽取已经国际化的所有中文信息，主要用于资源的整理、翻译等
  * <p>
- *     方案有两种：
- *     一、 直接按照资源文件的方式进行读取
- *     二、 按照文件流的方式读取字符，然后解析。
- *
+ * 方案有两种：
+ * 一、 直接按照资源文件的方式进行读取
+ * 二、 按照文件流的方式读取字符，然后解析。
+ * <p>
  * properties文件的处理
  *
  * @author wenfan
@@ -46,7 +46,7 @@ public class ResourceFileUtil {
 
     }
 
-    public OrderedProperties getPropsFromFile(File file){
+    public OrderedProperties getPropsFromFile(File file) {
 
         // 为了保证资源的顺序，采用LinkedHashSet存储
         OrderedProperties prop = new OrderedProperties();
@@ -54,7 +54,7 @@ public class ResourceFileUtil {
         try {
             if (file.exists())
                 prop.load(new InputStreamReader(new FileInputStream(file), resourceFileEncoding));
-        } catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -62,7 +62,7 @@ public class ResourceFileUtil {
 
     }
 
-    public OrderedProperties getPropsFromFiles(){
+    public OrderedProperties getPropsFromFiles() {
 
         // 为了保证资源的顺序，采用LinkedHashSet存储
         OrderedProperties prop = new OrderedProperties();
@@ -78,6 +78,65 @@ public class ResourceFileUtil {
 
     }
 
+
+    public void setEnglishProps(Properties properties) {
+
+        // 为了保证资源的顺序，采用LinkedHashSet存储
+        OrderedProperties prop;
+
+        for (File file : this.files) {
+            if (null != file && file.exists()) {
+
+                prop = this.getPropsFromFile(file);
+
+                //  update the resource
+                for(String key : prop.stringPropertyNames()){
+
+                    if(properties.get(key) != null && !"".equals(properties.get(key))){
+                        prop.put(key, properties.get(key));
+                    }
+                }
+
+                File fileBack = new File(file.getAbsolutePath().replace("zh_CN", "en_US"));
+
+                writePropsFile(fileBack, prop);
+            }
+        }
+
+    }
+
+
+    private void writePropsFile(File file, OrderedProperties prop) {
+
+        BufferedWriter output = null;
+
+        try {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+
+            output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), resourceFileEncoding));
+
+            // 保存属性值
+            prop.store(output, "create the english resource file");
+
+            output.flush();
+            output.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+
+    }
 
     /**
      * 属性文件初始化：主要是依据路径加载所有的符合类型的文件

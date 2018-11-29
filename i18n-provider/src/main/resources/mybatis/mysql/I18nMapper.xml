@@ -6,6 +6,7 @@
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="NAME" property="name"/>
         <result column="PROJECT_TYPE" property="projectType"/>
+        <result column="PROJECT_STATUS" property="projectStatus"/>
         <result column="ATTACH_ID" property="attachId"/>
 
         <result column="dr" property="dr"/>

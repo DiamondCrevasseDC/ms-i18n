@@ -148,12 +148,22 @@ public class I18nController extends GenericController<I18n> {
             // 1: JQuery   2: React
             // projectType=JQuery
             String projectType = "React";
+
             if ("1".equalsIgnoreCase(i18n.getProjectType())) {
                 projectType = "JQuery";
+
+                this.i18nToolsService.operation(path, zipPath, projectType);
+
             } else if ("2".equalsIgnoreCase(i18n.getProjectType())) {
                 projectType = "React";
+
+                this.i18nToolsService.operation(path, zipPath, projectType);
+
             } else if ("3".equalsIgnoreCase(i18n.getProjectType())) {
                 projectType = "Properties";
+
+                this.i18nToolsService.operation(path, zipPath, projectType);
+
             } else if ("4".equalsIgnoreCase(i18n.getProjectType())) {
 
                 // add by yy 20181123
@@ -174,59 +184,45 @@ public class I18nController extends GenericController<I18n> {
                 ZipUtils.unZipForFilePath(path, zipPath);
 
 
-                // 第一次执行时将文件导入数据库： 首先解析上传的文件中存在的zh_CN.properties\zh_CN.json的文件，将解析的对象保持为list，然后调用save接口保持数据库。
+                if(!"parse".equalsIgnoreCase(i18n.getProjectStatus())){
 
-                logger.info("开始进行资源解析：" + zipPath);
-                TranslateEnglish sb = new TranslateEnglish();
 
-                sb.init(zipPath, "English", "properties,json");
+                    // 第一次执行时将文件导入数据库： 首先解析上传的文件中存在的zh_CN.properties\zh_CN.json的文件，将解析的对象保持为list，然后调用save接口保持数据库。
 
-                logger.info("资源解析初始化完毕！");
+//                    logger.info("开始进行资源解析：" + zipPath);
+//                    TranslateEnglish sb = new TranslateEnglish();
+//
+//                    sb.init(zipPath, "English", "properties,json");
+//
+//                    logger.info("资源解析初始化完毕！");
 
 //                Properties properties = sb.getOrderedProperties(zipPath);
 
 
-                OrderedProperties op = new OrderedProperties();
+                    OrderedProperties op = new OrderedProperties();
 
-                logger.info("资源解析properties！");
-                // 设置属性值
-                // resourcefileutil
-                ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
-                resourceFileUtil.init(zipPath, "zh_CN.properties");
+                    logger.info("资源解析properties！");
+                    // 设置属性值
+                    // resourcefileutil
+                    ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
+                    resourceFileUtil.init(zipPath, "zh_CN.properties");
 
-                op.add(resourceFileUtil.getPropsFromFiles());
+                    op.add(resourceFileUtil.getPropsFromFiles());
 
-                logger.info("资源解析json！");
-                // jsonfileutil
-                JsonFileUtil jsonFileUtil = new JsonFileUtil();
-                jsonFileUtil.init(zipPath, "zh_CN.json");
-                op.add(jsonFileUtil.getPropsFromFiles());
-
-
-                logger.info("资源解析完毕：" + op);
-                // 通过判断是否存在资源数据库来确定是第一次还是第二次执行
-
-//                Boolean haveInsert = false;
-//                for (String key : op.stringPropertyNames()) {
-//
-//                    try {
-//                        if (this.translateService.findByCode(key) != null) {
-//                            haveInsert = true;
-//                        }
-//                    } catch (RuntimeException e) {
-//                        break;
-//                    }
-//                    break;
-//                }
+                    logger.info("资源解析json！");
+                    // jsonfileutil
+                    JsonFileUtil jsonFileUtil = new JsonFileUtil();
+                    jsonFileUtil.init(zipPath, "zh_CN.json");
+                    op.add(jsonFileUtil.getPropsFromFiles());
 
 
-                logger.info("开始执行资源数据库持久化操作！");
+                    logger.info("资源解析完毕：" + op);
 
-                if(!"admin".equalsIgnoreCase(i18n.getLastModifyUser())){
-//                if (!haveInsert) {
+                    logger.info("开始执行资源数据库持久化操作！");
+
                     saveTranslate(op);
 
-                    i18n.setLastModifyUser("admin");
+                    i18n.setProjectStatus("parse");
 
                     this.i18nService.save(i18n);
 
@@ -237,23 +233,45 @@ public class I18nController extends GenericController<I18n> {
 
                     // 第二次执行时将翻译后的内容按文件的格式写出并生成文件
                     // TODO
+                    // 获取数据库导入的翻译的资源信息
+                    List<Translate> transList = this.translateService.findAll();
+                    Properties properties = new Properties();
 
-                    return super.buildSuccess();
+                    for(Translate translate : transList){
+                        properties.put(translate.getPropertyCode(), translate.getEnglish());
+                    }
+
+                    // 读取该目录下的zh_CN.properties中文资源文件，然后将对应的key的value值变更为英文，然后保存至en_US.properties文件即可。
+                    // 然后压缩并提供下载。
+                    logger.info("资源获取并写入properties！");
+                    // 设置属性值
+                    // resourcefileutil
+                    ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
+                    resourceFileUtil.init(zipPath, "zh_CN.properties");
+
+                    resourceFileUtil.setEnglishProps(properties);
+
+                    logger.info("资源获取并写入json！");
+                    // jsonfileutil
+                    JsonFileUtil jsonFileUtil = new JsonFileUtil();
+                    jsonFileUtil.init(zipPath, "zh_CN.json");
+
+                    jsonFileUtil.setEnglishProps(properties);
+
+//                    return super.buildSuccess();
 
                 }
 
-
             }
 
-            this.i18nToolsService.operation(path, zipPath, projectType);
-
-//            String zipFile = this.i18nToolsService.operation(path, projectType);
-//
+            /********************执行最后文件的压缩操作*************************/
             zipPath = zipPath.substring(zipPath.lastIndexOf("/") + 1) + I18nConstants.FILE_ZIP_POSTFIX;
 
             // 保存时存放是相对的可以直接下载的路径（）
             String f = i18n.getAttachment().get(0).getAccessAddress();
             f = f.substring(0, f.lastIndexOf("/")) + File.separator + zipPath;
+
+            logger.info("最后文件的压缩路径为：" + zipPath);
 
             i18n.setAttachId(f);
 

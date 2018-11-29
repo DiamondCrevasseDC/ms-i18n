@@ -47,7 +47,7 @@ public class JsonFileUtil {
     }
 
 
-    public JsonObject getJsonFromFile(File file){
+    public JsonObject getJsonFromFile(File file) {
 
         // 为了保证资源的顺序，采用LinkedHashSet存储
         JsonObject object = new JsonObject(); //创建Json格式的数据
@@ -56,7 +56,7 @@ public class JsonFileUtil {
             if (file.exists()) {
                 object = new JsonParser().parse(new InputStreamReader(new FileInputStream(file), resourceFileEncoding)).getAsJsonObject();
             }
-        } catch (Exception e){
+        } catch (Exception e) {
 //            e.printStackTrace();
 
             logger.info("***加载JSON资源文件异常，文件路径为： " + file.getAbsolutePath());
@@ -66,7 +66,7 @@ public class JsonFileUtil {
 
     }
 
-    public OrderedProperties getPropsFromFile(File file){
+    public OrderedProperties getPropsFromFile(File file) {
 
         // 为了保证资源的顺序，采用LinkedHashSet存储
         OrderedProperties prop = new OrderedProperties();
@@ -87,7 +87,7 @@ public class JsonFileUtil {
 
     }
 
-    public OrderedProperties getPropsFromFiles(){
+    public OrderedProperties getPropsFromFiles() {
 
         // 为了保证资源的顺序，采用LinkedHashSet存储
         OrderedProperties prop = new OrderedProperties();
@@ -100,6 +100,70 @@ public class JsonFileUtil {
         }
 
         return prop;
+
+    }
+
+
+    public void setEnglishProps(Properties properties) {
+
+        // 为了保证资源的顺序，采用LinkedHashSet存储
+        JsonObject object;
+
+        for (File file : this.files) {
+            if (null != file && file.exists()) {
+
+                object = this.getJsonFromFile(file);
+
+                //  update the resource
+                Iterator<Map.Entry<String, JsonElement>> obj = object.entrySet().iterator();
+
+                while (obj.hasNext()) {
+                    Map.Entry<String, JsonElement> j = obj.next();
+
+                    if (null != properties.getProperty(j.getKey()) && !"".equals(properties.getProperty(j.getKey()))) {
+
+                        object.addProperty(j.getKey(), properties.getProperty(j.getKey()));
+                    }
+                }
+
+                File fileBack = new File(file.getAbsolutePath().replace("zh_CN", "en_US"));
+
+                writeJsonFile(fileBack, object);
+
+            }
+        }
+
+    }
+
+
+    private void writeJsonFile(File file, JsonObject object) {
+
+        BufferedWriter output = null;
+
+        try {
+            if (!file.getParentFile().exists()) {
+                file.getParentFile().mkdirs();
+            }
+
+            output = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), resourceFileEncoding));
+
+            // 保存属性值
+            output.write(object.toString());
+
+            output.flush();
+            output.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (output != null) {
+                try {
+                    output.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
     }
 

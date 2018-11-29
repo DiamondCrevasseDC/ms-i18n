@@ -173,8 +173,13 @@ public class TranslateController extends BaseController {
                                 if (list1 == null || list1.size() == 0) {
                                     translateService.save(translate);
                                 } else if (list1.size() == 1) {
-                                    list1.get(0).setEnglish(translate.getEnglish());
-                                    translateService.update(list1.get(0));
+
+                                    // 如果英文字段中存在数据，则不更新
+                                    if(list1.get(0).getEnglish() == null || "".equals(list1.get(0).getEnglish())){
+                                        list1.get(0).setEnglish(translate.getEnglish());
+                                        translateService.update(list1.get(0));
+                                    }
+
                                 } else {
                                     logger.info("****数据库资源CODE存在问题，请排查：" + translate.getPropertyCode());
                                 }

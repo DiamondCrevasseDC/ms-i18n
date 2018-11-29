@@ -3,6 +3,9 @@ package com.yonyou.cloud.corpus.controller;
 import cn.hutool.core.util.StrUtil;
 import com.yonyou.cloud.corpus.entity.Corpus;
 import com.yonyou.cloud.corpus.service.CorpusService;
+import com.yonyou.i18n.model.OrderedProperties;
+import com.yonyou.i18n.utils.Helper;
+import com.yonyou.i18n.utils.ResourceFileUtil;
 import com.yonyou.iuap.base.web.BaseController;
 import com.yonyou.iuap.common.utils.ExcelExportImportor;
 import com.yonyou.iuap.mvc.annotation.FrontModelExchange;
@@ -74,6 +77,53 @@ public class CorpusController extends BaseController {
             Corpus entity = this.corpusService.findById(id);
             return this.buildSuccess(entity);
         }
+    }
+
+    /**
+     * 该方法主要是为了初始化语料库而存在。
+     */
+    @Deprecated
+    @RequestMapping(value = "/saveall")
+    @ResponseBody
+    public void saveAll() {
+
+        String path = "/Users/yanyong/Downloads/corpus/";
+
+        ResourceFileUtil rf = new ResourceFileUtil();
+        rf.init(path, "zh_CN.properties");
+
+        OrderedProperties properties = rf.getPropsFromFiles();
+
+
+        ResourceFileUtil rf1 = new ResourceFileUtil();
+        rf1.init(path, "en_US.properties");
+
+        OrderedProperties properties1 = rf1.getPropsFromFiles();
+
+        List<String> errorList = new ArrayList<String>();
+        Corpus c;
+
+        int i = 0;
+        int j = 0;
+        for (String key : properties.stringPropertyNames()) {
+
+            c = new Corpus();
+
+            c.setChinese(Helper.unwindEscapeChars(properties.getProperty(key)));
+            c.setEnglish(Helper.unwindEscapeChars(properties1.getProperty(key)));
+
+            try {
+                this.corpusService.save(c);
+                i++;
+            } catch (Exception e) {
+                errorList.add(key);
+                j++;
+            }
+        }
+
+        logger.info("***执行资源写入数据库完成！总条数为：" + (i + j) + "***保存条数为：" + i + "***异常条数为：" + j + "***异常数据的key为：" + errorList);
+
+
     }
 
 

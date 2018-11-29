@@ -1,5 +1,6 @@
 package com.yonyou.cloud.i18n.controller;
 
+import com.yonyou.cloud.corpus.service.CorpusService;
 import com.yonyou.cloud.i18n.entity.I18n;
 import com.yonyou.cloud.i18n.service.I18nService;
 import com.yonyou.cloud.i18n.service.I18nToolsService;
@@ -62,6 +63,14 @@ public class I18nController extends GenericController<I18n> {
     @Autowired
     public void setTranslateService(TranslateService translateService) {
         this.translateService = translateService;
+    }
+
+
+    private CorpusService corpusService;
+
+    @Autowired
+    public void setCorpusService(CorpusService corpusService) {
+        this.corpusService = corpusService;
     }
 
     @Override
@@ -275,14 +284,21 @@ public class I18nController extends GenericController<I18n> {
         List<String> errorList = new ArrayList<String>();
         Translate translate;
 
+        Properties englishCorpus = corpusService.getEnglishCorpus();
+        logger.info("获取数据库中英文语料库！语料条数为：" + englishCorpus.size());
+
         int i = 0;
         int j = 0;
+        String v;
         for (String key : properties.stringPropertyNames()) {
 
             translate = new Translate();
             translate.setPropertyCode(key);
 
-            translate.setChinese(Helper.unwindEscapeChars(properties.getProperty(key)));
+            v = Helper.unwindEscapeChars(properties.getProperty(key));
+
+            translate.setChinese(v);
+            translate.setEnglish(englishCorpus.getProperty(v));
 
             try {
                 this.translateService.save(translate);

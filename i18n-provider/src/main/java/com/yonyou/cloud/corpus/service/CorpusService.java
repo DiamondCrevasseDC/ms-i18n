@@ -2,6 +2,7 @@ package com.yonyou.cloud.corpus.service;
 
 import com.yonyou.cloud.corpus.dao.CorpusMapper;
 import com.yonyou.cloud.corpus.entity.Corpus;
+import com.yonyou.i18n.model.OrderedProperties;
 import com.yonyou.iuap.baseservice.intg.service.GenericIntegrateService;
 import com.yonyou.iuap.baseservice.intg.support.ServiceFeature;
 import com.yonyou.iuap.baseservice.ref.service.RefCommonService;
@@ -10,9 +11,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import static com.yonyou.iuap.baseservice.intg.support.ServiceFeature.REFERENCE;
 
@@ -42,6 +41,27 @@ public class CorpusService extends GenericIntegrateService<Corpus> {
         list = refService.fillListWithRef(list);
         return list;
     }
+
+    /**
+     * 获取中英文语料库：key为中文，value为英文
+     *
+     * @return
+     */
+    public OrderedProperties getEnglishCorpus() {
+
+        OrderedProperties op = new OrderedProperties();
+
+        List<Corpus> ec = this.findAll();
+
+        for (Corpus c : ec) {
+
+            op.put(c.getChinese(), c.getEnglish());
+        }
+
+        return op;
+
+    }
+
 
 //    public Corpus findByCode(String codeValue) {
 //        return this.findUnique("propertyCode", codeValue);

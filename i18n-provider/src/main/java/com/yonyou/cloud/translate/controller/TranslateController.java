@@ -130,9 +130,79 @@ public class TranslateController extends BaseController {
         return result;
     }
 
+    /**
+     * 根据自动的导入功能进行更改，同时处理insert以及update操作
+     *
+     * @param request
+     * @return
+     */
     @RequestMapping(value = "/toImportExcel", method = RequestMethod.POST)
     @ResponseBody
     public Map<String, String> importExcel(HttpServletRequest request) {
+        Map<String, String> result = new HashMap<String, String>();
+        try {
+
+            List<Translate> list = new ArrayList<Translate>();
+
+            CommonsMultipartResolver resolver = new CommonsMultipartResolver();
+            if (resolver.isMultipart(request)) {
+                MultipartHttpServletRequest multipartRequest = (MultipartHttpServletRequest) request;
+                int size = multipartRequest.getMultiFileMap().size();
+                MultiValueMap<String, MultipartFile> multiValueMap = multipartRequest.getMultiFileMap();
+                if (multiValueMap != null && size > 0) {
+                    for (MultiValueMap.Entry<String, List<MultipartFile>> me : multiValueMap.entrySet()) {
+                        List<MultipartFile> multipartFile = me.getValue();
+                        for (MultipartFile mult : multipartFile) {
+                            String multName = mult.getOriginalFilename().toString();
+                            String multTypeName = multName.substring(multName.lastIndexOf(".") + 1, multName.length());
+                            if ((multTypeName != "xlsx" && !"xlsx".equals(multTypeName)) && (multTypeName != "xls" && !"xls".equals(multTypeName))) {
+                                throw new Exception("导入数据格式异常！");
+                            }
+                            list = ExcelExportImportor.loadExcel(mult.getInputStream(), getImportHeadInfo(), Translate.class);
+                            if (list == null || list.size() == 0) {
+                                throw new Exception("导入数据异常！");
+                            }
+
+                            List<Translate> list1;
+                            // 针对Excel解析的数据进行逻辑判断处理
+                            for (Translate translate : list) {
+
+                                // 该部分有一个前提是所有的code都是唯一的
+                                list1 = translateService.queryList("propertyCode", translate.getPropertyCode());
+
+                                if (list1 == null || list1.size() == 0) {
+                                    translateService.save(translate);
+                                } else if (list1.size() == 1) {
+                                    list1.get(0).setEnglish(translate.getEnglish());
+                                    translateService.update(list1.get(0));
+                                } else {
+                                    logger.info("****数据库资源CODE存在问题，请排查：" + translate.getPropertyCode());
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+//            translateService.saveBatch(list);
+            result.put("status", "success");
+            result.put("msg", "Excel导入成功");
+        } catch (Exception e) {
+            logger.error("Excel导入失败", e);
+            result.put("status", "failed");
+            result.put("msg", e.getMessage() != null ? e.getMessage() : "Excel导入失败");
+        }
+        return result;
+    }
+
+    /**
+     * 自动生成的导入功能：只处理简单的insert操作
+     *
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/toImportExcel-frush", method = RequestMethod.POST)
+    @ResponseBody
+    public Map<String, String> importExcelFrush(HttpServletRequest request) {
         Map<String, String> result = new HashMap<String, String>();
         try {
 

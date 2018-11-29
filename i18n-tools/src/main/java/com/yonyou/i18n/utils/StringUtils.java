@@ -28,6 +28,24 @@ public class StringUtils {
     }
 
     /**
+     * 删除\n、~、等特殊字符
+     *
+     * @param str
+     * @return
+     */
+    public static String delSpecialChar(String str) {
+        return str.replaceAll(Matcher.quoteReplacement("\\n"), "")
+                .replaceAll("~", "")
+                .replaceAll("&nbsp;", "")
+                .replaceAll(" ", "")
+                .replaceAll(Matcher.quoteReplacement("\\"), "")
+                .replaceAll(Matcher.quoteReplacement(":"), "")
+                .replaceAll(Matcher.quoteReplacement("!"), "")
+                .replaceAll(Matcher.quoteReplacement("："), "")
+                .replaceAll(Matcher.quoteReplacement("！"), "");
+    }
+
+    /**
      * 提取最后一个括号中内容，忽略括号中的括号
      *
      * @param msg

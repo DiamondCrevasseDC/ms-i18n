@@ -5,6 +5,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.yonyou.i18n.model.OrderedProperties;
 import org.apache.commons.logging.LogFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.util.*;
@@ -20,6 +22,8 @@ import java.util.regex.Matcher;
 public class JsonFileUtil {
 
 //    private JsonFileUtil _this = new JsonFileUtil();
+
+    private Logger logger = LoggerFactory.getLogger(JsonFileUtil.class);
 
     private String resourceFileEncoding = ConfigUtils.getPropertyValue("resourceFileEncoding");
 
@@ -53,7 +57,9 @@ public class JsonFileUtil {
                 object = new JsonParser().parse(new InputStreamReader(new FileInputStream(file), resourceFileEncoding)).getAsJsonObject();
             }
         } catch (Exception e){
+//            e.printStackTrace();
 
+            logger.info("***加载JSON资源文件异常，文件路径为： " + file.getAbsolutePath());
         }
 
         return object;

@@ -284,7 +284,7 @@ public class I18nController extends GenericController<I18n> {
         List<String> errorList = new ArrayList<String>();
         Translate translate;
 
-        Properties englishCorpus = corpusService.getEnglishCorpus();
+        OrderedProperties englishCorpus = corpusService.getEnglishCorpus();
         logger.info("获取数据库中英文语料库！语料条数为：" + englishCorpus.size());
 
         int i = 0;

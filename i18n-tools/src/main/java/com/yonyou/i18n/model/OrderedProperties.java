@@ -3,6 +3,8 @@
  */
 package com.yonyou.i18n.model;
 
+import com.yonyou.i18n.utils.StringUtils;
+
 import java.util.*;
 
 /**
@@ -41,6 +43,21 @@ public class OrderedProperties extends Properties {
         for (String key : op.stringPropertyNames()){
             this.put(key, op.get(key));
         }
+    }
+
+    @Override
+    public String getProperty(String key) {
+
+        String oval = super.getProperty(key);
+
+        if(oval == null || "".equals(oval)){
+
+            key = StringUtils.delSpecialChar(key);
+
+            oval = super.getProperty(key);
+        }
+
+        return oval;
     }
 
 }

@@ -32,19 +32,16 @@ public class I18nToolsService {
     }
 
     /**
+     * 目前只处理1、2、3 种情况，4、english不用服务处理
+     *
      * @param path
      * @return
      * @throws Exception
      */
-    @Deprecated
-    public String operation(String path, String projectType) throws Exception {
+    public void operation(String path, String projectType) throws Exception {
 
+        this.i18nToolsService.operateTools(path, projectType);
 
-        String callback = this.i18nToolsService.operateTools(path, projectType);
-
-        logger.info("项目回写路径为：" + callback);
-
-        return callback;
     }
 
     /**

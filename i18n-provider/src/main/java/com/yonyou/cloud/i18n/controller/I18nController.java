@@ -183,7 +183,7 @@ public class I18nController extends GenericController<I18n> {
             zip(targetPath, zipFile);
 
             /********************执行最后文件路径的保存*************************/
-            zipFile = zipFile.substring(zipFile.lastIndexOf("/") + 1) + I18nConstants.FILE_ZIP_POSTFIX;
+            zipFile = zipFile.substring(zipFile.lastIndexOf("/") + 1);
 
             logger.info("最后文件的压缩路径为：" + zipFile);
 

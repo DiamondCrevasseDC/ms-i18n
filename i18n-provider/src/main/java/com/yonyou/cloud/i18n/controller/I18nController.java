@@ -173,10 +173,6 @@ public class I18nController extends GenericController<I18n> {
                 /********************执行上传文件的解压缩*************************/
                 logger.info("识别文件：" + path);
 
-//        String path = sourcePath.substring(0, sourcePath.lastIndexOf(".")) + "_" + System.currentTimeMillis();
-
-//                String zipFile = zipPath + I18nConstants.FILE_ZIP_POSTFIX;
-
                 zipPath = zipPath + "/";
 
                 logger.info("解压缩路径：" + zipPath);
@@ -185,19 +181,6 @@ public class I18nController extends GenericController<I18n> {
 
 
                 if(!"parse".equalsIgnoreCase(i18n.getProjectStatus())){
-
-
-                    // 第一次执行时将文件导入数据库： 首先解析上传的文件中存在的zh_CN.properties\zh_CN.json的文件，将解析的对象保持为list，然后调用save接口保持数据库。
-
-//                    logger.info("开始进行资源解析：" + zipPath);
-//                    TranslateEnglish sb = new TranslateEnglish();
-//
-//                    sb.init(zipPath, "English", "properties,json");
-//
-//                    logger.info("资源解析初始化完毕！");
-
-//                Properties properties = sb.getOrderedProperties(zipPath);
-
 
                     OrderedProperties op = new OrderedProperties();
 
@@ -232,33 +215,31 @@ public class I18nController extends GenericController<I18n> {
 
 
                     // 第二次执行时将翻译后的内容按文件的格式写出并生成文件
-                    // TODO
                     // 获取数据库导入的翻译的资源信息
+                    logger.info("获取数据表翻译的资源，生成资源对象properties！");
                     List<Translate> transList = this.translateService.findAll();
                     Properties properties = new Properties();
 
                     for(Translate translate : transList){
-                        properties.put(translate.getPropertyCode(), translate.getEnglish());
+                        if(null != translate.getEnglish() && !"".equals(translate.getEnglish())){
+                            properties.put(translate.getPropertyCode(), translate.getEnglish());
+                        }
                     }
 
                     // 读取该目录下的zh_CN.properties中文资源文件，然后将对应的key的value值变更为英文，然后保存至en_US.properties文件即可。
                     // 然后压缩并提供下载。
                     logger.info("资源获取并写入properties！");
                     // 设置属性值
-                    // resourcefileutil
                     ResourceFileUtil resourceFileUtil = new ResourceFileUtil();
                     resourceFileUtil.init(zipPath, "zh_CN.properties");
 
                     resourceFileUtil.setEnglishProps(properties);
 
                     logger.info("资源获取并写入json！");
-                    // jsonfileutil
                     JsonFileUtil jsonFileUtil = new JsonFileUtil();
                     jsonFileUtil.init(zipPath, "zh_CN.json");
 
                     jsonFileUtil.setEnglishProps(properties);
-
-//                    return super.buildSuccess();
 
                 }
 

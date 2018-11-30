@@ -173,7 +173,7 @@ public class I18nController extends GenericController<I18n> {
                 /********************执行上传文件的解压缩*************************/
                 logger.info("识别文件：" + path);
 
-                zipPath = zipPath + "/";
+//                zipPath = zipPath + "/";
 
                 logger.info("解压缩路径：" + zipPath);
 

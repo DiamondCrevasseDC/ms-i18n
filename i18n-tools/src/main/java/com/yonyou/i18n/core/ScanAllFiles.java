@@ -50,6 +50,8 @@ public class ScanAllFiles {
             this.parseProjectPath = path;
             ConfigUtils.props.setProperty("parseProjectPath", path);
         }
+
+        logger.info("当前加载的文件路径为：" + ConfigUtils.getPropertyValue("parseProjectPath"));
     }
 
     /**
@@ -66,6 +68,9 @@ public class ScanAllFiles {
             this.projectType = projectType;
             ConfigUtils.props.setProperty("projectType", projectType);
         }
+
+        logger.info("当前加载的文件类型为：" + ConfigUtils.getPropertyValue("projectType"));
+
     }
 
     /**

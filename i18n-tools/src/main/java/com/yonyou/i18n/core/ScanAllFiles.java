@@ -119,6 +119,8 @@ public class ScanAllFiles {
 
         logger.info(LogUtils.printMessage("加载待检索文件成功！"));
 
+        logger.info("加载的目录下的目录总数为：" + pageNodes.size());
+
         return pageNodes;
     }
 

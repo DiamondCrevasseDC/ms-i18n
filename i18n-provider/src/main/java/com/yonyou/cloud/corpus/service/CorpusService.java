@@ -53,6 +53,7 @@ public class CorpusService extends GenericIntegrateService<Corpus> {
 
         List<Corpus> ec = this.findAll();
 
+        logger.info("系统直接检索出来的语料库条数（包含很多重复的数据)：" + ec.size() );
         for (Corpus c : ec) {
 
             op.put(c.getChinese(), c.getEnglish());

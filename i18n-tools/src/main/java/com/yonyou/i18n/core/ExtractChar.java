@@ -96,6 +96,8 @@ public class ExtractChar {
      */
     public void doExtract(List<PageNode> pageNodes) {
 
+        logger.info("--抽取资源入口--扫描文件个数："+pageNodes.size());
+
         for (PageNode pageNode : pageNodes) {
 
             // 针对每个独立的文件，进行中文的解析

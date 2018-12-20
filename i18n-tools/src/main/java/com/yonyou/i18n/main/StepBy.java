@@ -74,7 +74,7 @@ public class StepBy {
     public void extract() throws Exception {
 
         try {
-            new ExtractChar().doExtract(pageNodes);
+            new ExtractChar().doExtract(this.pageNodes);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;
@@ -91,10 +91,10 @@ public class StepBy {
             ResourcesFile rf = new ResourcesFile();
 
             // 写入整体资源文件
-            rf.writeResourceFile(pageNodes);
+            rf.writeResourceFile(this.pageNodes);
 
             // 分目录写入资源文件
-            rf.writeResourceFileByDirectory(pageNodes);
+            rf.writeResourceFileByDirectory(this.pageNodes);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;
@@ -110,7 +110,7 @@ public class StepBy {
     public void replace() throws Exception {
 
         try {
-            new ReplaceFile().updateFiles(pageNodes);
+            new ReplaceFile().updateFiles(this.pageNodes);
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             throw e;
